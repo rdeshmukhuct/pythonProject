@@ -1,0 +1,19 @@
+1.
+("Article `download()` failed with HTTPConnectionPool(host='https', port=80): Max retries exceeded with url:
+    --> An explanation for this issue is that Google server refuses my connection, because I am sending too many
+        request from the same ip address in a short time period.
+
+        ->> to try and overcome issue, I will try to catch connection related exceptions. example
+
+         {      try:
+                    page1 = request.get(ap)
+               except requests.exceptions.ConnectionError:
+                    r.status_code = "Connections refused"
+         }
+
+         or try using a time gap to send requests to server by using { sleep(timeinsec) }  func in python.
+         > from time import sleep. <-- this is the import needed to use sleep(timeinsec).
+
+
+2.
+('Article `download()` failed with 403 Client Error: Forbidden for url:
