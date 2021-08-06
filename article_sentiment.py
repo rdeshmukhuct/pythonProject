@@ -43,12 +43,12 @@ class ArticleSentiment:
         self.analysis_polarity = []  # saves the numerical value of the article polarity.
         self.summary = []
         self.links = []
-        self.url = np.array([])
 
-        self.google_bucket = []
-        self.yahoo_bucket = []
-        self.bucket_1 = []
-        self.bucket_2 = []
+        self.url = np.array([])
+        self.google_bucket = np.array([])
+        self.yahoo_bucket = np.array([])
+        self.bucket_1 = np.array([])
+        self.bucket_2 = np.array([])
 
         self.positive_counter = 0
         self.negative_counter = 0
@@ -67,17 +67,17 @@ class ArticleSentiment:
         self.url = np.array([protocol + domain if protocol not in domain else domain for domain in self.links])
         # self.yahoo_bucket = [domain_yahoo for domain_yahoo in self.url if 'yahoo' in domain_yahoo]
         # self.google_bucket = [domain_google for domain_google in self.url if 'google' in domain_google]
-        # quarter = len(self.url) // 4
-        #
-        # s1 = self.url[0:quarter]
-        # s2 = self.url[quarter:quarter * 2]
-        # s3 = self.url[(quarter * 2): quarter * 3]
-        # s4 = self.url[(quarter * 3): -1]
-        #
-        # self.yahoo_bucket = s1
-        # self.google_bucket = s2
-        # self.bucket_1 = s3
-        # self.bucket_2 = s4
+        quarter = len(self.url) // 4
+
+        s1 = self.url[0:quarter]
+        s2 = self.url[quarter:quarter * 2]
+        s3 = self.url[(quarter * 2): quarter * 3]
+        s4 = self.url[(quarter * 3): -1]
+
+        self.yahoo_bucket = s1
+        self.google_bucket = s2
+        self.bucket_1 = s3
+        self.bucket_2 = s4
 
     def analyze_sentence(self, article):
         analysis_polarity_append = self.analysis_polarity.append  # optimization
@@ -85,14 +85,14 @@ class ArticleSentiment:
         analysis_polarity_append(analysis.polarity)
         return analysis
 
-    def lexical_article_analyze(self):
+    def lexical_article_analyze(self, loop):
 
         pos_append = self.positive_list.append  # optimization
         neg_append = self.negative_list.append  # optimization
         neu_append = self.neutral_list.append  # optimization
         summary_append = self.summary.append  # optimization
 
-        for articles in self.url:
+        for articles in loop:
             parsed_article = parse_articles(articles)  # This will return a version of the article that is pre-processed
 
             analysis = self.analyze_sentence(parsed_article)  # returns the analyzed version of the article
@@ -147,21 +147,21 @@ if __name__ == '__main__':
     ############################################################
 
     begin = time.time()
-    # p1 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.yahoo_bucket))
-    # p2 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.google_bucket))
-    # p3 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.bucket_1))
-    # p4 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.bucket_2))
-    #
-    # p1.start()
-    # p2.start()
-    # p3.start()
-    # p4.start()
-    #
-    # p1.join()
-    # p2.join()
-    # p3.join()
-    # p4.join()
-    obj.lexical_article_analyze()
+    p1 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.yahoo_bucket))
+    p2 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.google_bucket))
+    p3 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.bucket_1))
+    p4 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.bucket_2))
+
+    p1.start()
+    p2.start()
+    p3.start()
+    p4.start()
+
+    p1.join()
+    p2.join()
+    p3.join()
+    p4.join()
+
 
     obj.show_stats()
     # obj.show_histogram()
@@ -171,7 +171,4 @@ if __name__ == '__main__':
     end = time.time()
     print("Total Runtime of the Program is: {:.2f} seconds".format(end - begin))
     print("Total Runtime of the Program is: {:.2f} seconds".format(end1 - begin1))
-    print("1", len(obj.yahoo_bucket))
-    print("2", len(obj.google_bucket))
-    print("3", len(obj.bucket_1))
-    print("4", len(obj.bucket_2))
+

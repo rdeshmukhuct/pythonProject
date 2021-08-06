@@ -30,8 +30,6 @@ def search_article_timeframe():
     print(url)
 
 
-
-
 def main():
     search_article_timeframe()
 
