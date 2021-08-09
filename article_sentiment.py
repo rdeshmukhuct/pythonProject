@@ -1,3 +1,4 @@
+import multiprocessing
 import statistics
 from matplotlib import pyplot as plt
 import numpy as np
@@ -5,7 +6,7 @@ from textblob import TextBlob
 import nltk
 from newspaper import Article, ArticleException
 from GoogleNews import GoogleNews
-import multiprocessing
+
 import numpy as np
 import time
 
@@ -30,7 +31,7 @@ def parse_articles(articles):
     return article
 
 
-class ArticleSentiment:
+class ArticleSentiment():
 
     def __init__(self, start_date, end_date):
         self.NEUTRAL_VALUE = 0  # Constant Value to be used in conditional statements
@@ -65,19 +66,19 @@ class ArticleSentiment:
         self.links = google_news.get_links()
         protocol = 'https://'  # appends the protocol if the url if the url is missing it.
         self.url = np.array([protocol + domain if protocol not in domain else domain for domain in self.links])
-        # self.yahoo_bucket = [domain_yahoo for domain_yahoo in self.url if 'yahoo' in domain_yahoo]
-        # self.google_bucket = [domain_google for domain_google in self.url if 'google' in domain_google]
-        quarter = len(self.url) // 4
-
-        s1 = self.url[0:quarter]
-        s2 = self.url[quarter:quarter * 2]
-        s3 = self.url[(quarter * 2): quarter * 3]
-        s4 = self.url[(quarter * 3): -1]
-
-        self.yahoo_bucket = s1
-        self.google_bucket = s2
-        self.bucket_1 = s3
-        self.bucket_2 = s4
+        # self.yahoo_bucket = np.array([domain_yahoo for domain_yahoo in self.url if 'yahoo' in domain_yahoo])
+        # self.google_bucket = np.array([domain_google for domain_google in self.url if 'google' in domain_google])
+        # quarter = len(self.url) // 4
+        #
+        # s1 = np.array(self.url[0:quarter])
+        # s2 = np.array(self.url[quarter:quarter * 2])
+        # s3 = np.array(self.url[(quarter * 2): quarter * 3])
+        # s4 = np.array(self.url[(quarter * 3): -1])
+        #
+        # self.yahoo_bucket = s1
+        # self.google_bucket = s2
+        # self.bucket_1 = s3
+        # self.bucket_2 = s4
 
     def analyze_sentence(self, article):
         analysis_polarity_append = self.analysis_polarity.append  # optimization
@@ -136,39 +137,53 @@ class ArticleSentiment:
         plt.title("Individual Article Sentiment")
         plt.close('all')
 
-
-if __name__ == '__main__':
-    begin1 = time.time()
-
-    obj = ArticleSentiment('01/01/2021', '01/13/2021')
-    obj.search_article_timeframe()
-
-    end1 = time.time()
-    ############################################################
-
-    begin = time.time()
-    p1 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.yahoo_bucket))
-    p2 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.google_bucket))
-    p3 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.bucket_1))
-    p4 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.bucket_2))
-
-    p1.start()
-    p2.start()
-    p3.start()
-    p4.start()
-
-    p1.join()
-    p2.join()
-    p3.join()
-    p4.join()
+    def main(self):
+        if __name__ == '__main__':
+            p1 = multiprocessing.Process(target=self.lexical_article_analyze(self.url))
+        # p2 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.google_bucket))
+        # p3 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.bucket_1))
+        # p4 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.bucket_2))
+        #
+            p1.start()
+        # p2.start()
+        # p3.start()
+        # p4.start()
+        #
+            p1.join()
+        # p2.join()
+        # p3.join()
+        # p4.join()
 
 
-    obj.show_stats()
-    # obj.show_histogram()
-    print("Computed")
-
-    # time.sleep(1)
-    end = time.time()
-    print("Total Runtime of the Program is: {:.2f} seconds".format(end - begin))
-    print("Total Runtime of the Program is: {:.2f} seconds".format(end1 - begin1))
-
+# if __name__ == '__main__':
+#
+#     obj = ArticleSentiment('01/01/2021', '01/13/2021')
+#     obj.search_article_timeframe()
+#     obj.main()
+#
+# ############################################################
+#
+#     begin = time.time()
+#
+# # p1 = multiprocessing.Process(target=obj.lexical_article_analyze, args=(obj.url,))
+# # p2 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.google_bucket))
+# # p3 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.bucket_1))
+# # p4 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.bucket_2))
+# #
+# # p1.start()
+# # p2.start()
+# # p3.start()
+# # p4.start()
+# #
+# # p1.join()
+# # p2.join()
+# # p3.join()
+# # p4.join()
+#
+#     obj.show_stats()
+# # obj.show_histogram()
+#     print("Computed")
+#
+# # time.sleep(1)
+#     end = time.time()
+#     print("Total Runtime of the Program is: {:.2f} seconds".format(end - begin))
