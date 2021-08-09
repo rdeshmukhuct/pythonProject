@@ -155,11 +155,12 @@ class ArticleSentiment():
         # p4.join()
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 #
-#     obj = ArticleSentiment('01/01/2021', '01/13/2021')
-#     obj.search_article_timeframe()
-#     obj.main()
+    obj = ArticleSentiment('01/01/2021', '01/13/2021')
+    obj.search_article_timeframe()
+    obj.main()
+    obj.show_stats()
 #
 # ############################################################
 #

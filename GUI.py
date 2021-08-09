@@ -1,14 +1,15 @@
 import datetime as dt
 from tkinter import *
 
+import mplfinance
 from tkcalendar import DateEntry
 
 # from article_sentiment import ArticleSentiment
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-import pandas as web
-from matplotlib.finance import candlestick2_ohlc
+import pandas_datareader as web
+from mplfinance.original_flavor import candlestick_ochl
 
 
 def visualize():
@@ -27,7 +28,7 @@ def visualize():
 
     ax = plt.subplot()
     ax.grid(True)
-    ax.set_axisbelow()
+    ax.set_axisbelow(True)
     ax.set_title('{} Share Price'.format(ticker), color='white')
     ax.figure.canvas.set_window_title("Alpha Version v0.1 Alpha")
     ax.set_facecolor('black')
@@ -36,7 +37,7 @@ def visualize():
     ax.tick_params(axis='y', colors='white')
     ax.xaxis_date()
 
-    candelstick_ohlc(ax, data.values, width=0.5, colorup='#00ff00')
+    candlestick_ochl(ax, data.values, width=0.5, colorup='#00ff00')
     plt.show()
 
 
