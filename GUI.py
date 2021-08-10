@@ -1,13 +1,14 @@
 import datetime as dt
 from tkinter import *
 from tkinter import ttk
+from tkinter.ttk import Style
 
 import mplfinance
 from newspaper import Article
 from textblob import TextBlob
 from tkcalendar import DateEntry
 
-from article_sentiment import ArticleSentiment
+# from article_sentiment import ArticleSentiment
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -32,8 +33,6 @@ def summarize():
     summary.config(state='disabled')
 
     analysis = TextBlob(article.text)
-
-
 
 
 def visualize():
@@ -66,40 +65,40 @@ def visualize():
 
 
 root = Tk()
+# style = Style()
+# style.config('W.TButton', font =('calibri', 10, 'bold', 'underline'),foreground = 'red')
 
 root.title("Stonk Market version 1")
 
-label_from = Label(root, text='From:')
+label_from = Label(root, text='From:', font='Roboto')
 label_from.pack()
 cal_from = DateEntry(root, width=50, year=2020, month=1, day=1)
 cal_from.pack(padx=10, pady=10)
 
-label_to = Label(root, text="To:")
+label_to = Label(root, text="To:", font='Roboto')
 label_to.pack()
 cal_to = DateEntry(root, width=50)
 cal_to.pack(padx=10, pady=10)
 
-label_ticker = Label(root, text="Ticker Symbol")
+label_ticker = Label(root, text="Ticker Symbol", font='Roboto')
 label_ticker.pack()
 text_ticker = Entry(root)
 text_ticker.pack()
 
-ulabel = Label(root, text='URL')
+ulabel = Label(root, text='URL', font='Roboto')
 ulabel.pack()
 
-utext = Text(root, height=1, width=140)
+utext = Text(root, height=1, width=100)
 utext.pack()
 
-summary = Text(root, height=20, width=140)
+summary = Text(root, height=20, width=100)
 summary.config(state='disabled', bg='#dddddd')
 summary.pack()
 
-btn_visualize = Button(root, text="Market Stock", command=visualize)
+btn_visualize = Button(root, text="Market Stock", font='Roboto', command=visualize)
 btn_visualize.pack()
 
-btn_summary = Button(root, text="Summarize", command=summarize)
+btn_summary = Button(root, text="Summarize", font='Roboto', command=summarize)
 btn_summary.pack()
 
 root.mainloop()
-
-
