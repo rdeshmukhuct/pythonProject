@@ -1,15 +1,39 @@
 import datetime as dt
 from tkinter import *
+from tkinter import ttk
 
 import mplfinance
+from newspaper import Article
+from textblob import TextBlob
 from tkcalendar import DateEntry
 
-# from article_sentiment import ArticleSentiment
+from article_sentiment import ArticleSentiment
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import pandas_datareader as web
 from mplfinance.original_flavor import candlestick_ochl
+import numpy as np
+
+
+def summarize():
+    url = utext.get('1.0', "end").strip()
+
+    article = Article(url)
+    article.download()
+    article.parse()
+    article.nlp()
+
+    summary.config(state='normal')
+
+    summary.delete('1.0', 'end')
+    summary.insert('1.0', article.summary)
+
+    summary.config(state='disabled')
+
+    analysis = TextBlob(article.text)
+
+
 
 
 def visualize():
@@ -60,7 +84,22 @@ label_ticker.pack()
 text_ticker = Entry(root)
 text_ticker.pack()
 
-btn_visualize = Button(root, text="Visualize", command=visualize)
+ulabel = Label(root, text='URL')
+ulabel.pack()
+
+utext = Text(root, height=1, width=140)
+utext.pack()
+
+summary = Text(root, height=20, width=140)
+summary.config(state='disabled', bg='#dddddd')
+summary.pack()
+
+btn_visualize = Button(root, text="Market Stock", command=visualize)
 btn_visualize.pack()
 
+btn_summary = Button(root, text="Summarize", command=summarize)
+btn_summary.pack()
+
 root.mainloop()
+
+

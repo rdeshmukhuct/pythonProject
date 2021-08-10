@@ -135,7 +135,7 @@ class ArticleSentiment():
         fig, ax = plt.subplots(figsize=(10, 7))
         ax.hist(a, bins='auto')
         plt.title("Individual Article Sentiment")
-        plt.close('all')
+        plt.show()
 
     def main(self):
         if __name__ == '__main__':
@@ -155,13 +155,13 @@ class ArticleSentiment():
         # p4.join()
 
 
-if __name__ == '__main__':
-#
-    obj = ArticleSentiment('01/01/2021', '01/13/2021')
-    obj.search_article_timeframe()
-    obj.main()
-    obj.show_stats()
-#
+# if __name__ == '__main__':
+# #
+obj = ArticleSentiment('01/01/2021', '01/13/2021')
+obj.search_article_timeframe()
+obj.main()
+obj.show_stats()
+# #
 # ############################################################
 #
 #     begin = time.time()
