@@ -1,20 +1,14 @@
 import datetime as dt
 from tkinter import *
-from tkinter import ttk
-from tkinter.ttk import Style
 
-import mplfinance
 from newspaper import Article
 from textblob import TextBlob
 from tkcalendar import DateEntry
-
-# from article_sentiment import ArticleSentiment
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import pandas_datareader as web
 from mplfinance.original_flavor import candlestick_ochl
-import numpy as np
 
 
 def summarize():
@@ -65,10 +59,8 @@ def visualize():
 
 
 root = Tk()
-# style = Style()
-# style.config('W.TButton', font =('calibri', 10, 'bold', 'underline'),foreground = 'red')
 
-root.title("Stonk Market version 1")
+root.title("Stock Market version 1")
 
 label_from = Label(root, text='From:', font='Roboto')
 label_from.pack()
@@ -102,3 +94,5 @@ btn_summary = Button(root, text="Summarize", font='Roboto', command=summarize)
 btn_summary.pack()
 
 root.mainloop()
+
+# https://finance.yahoo.com/news/ultra-clean-reports-second-quarter-200500903.html
