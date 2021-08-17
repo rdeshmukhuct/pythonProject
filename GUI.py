@@ -10,20 +10,36 @@ import matplotlib.dates as mdates
 import pandas_datareader as web
 from mplfinance.original_flavor import candlestick_ochl
 
+from GoogleNews import GoogleNews
+import numpy as np
+
 
 def summarize():
-    url = utext.get('1.0', "end").strip()
+    from_date = cal_from.get_date()
+    to_date = cal_to.get_date()
 
-    article = Article(url)
+    d1 = from_date.strftime("%m/%d/%Y")
+    d2 = to_date.strftime("%m/%d/%Y")
+
+    google_news = GoogleNews()
+    google_news.set_lang('en')
+    google_news.set_time_range(d1, d2)
+    google_news.set_encode('utf-8')
+    google_news.get_news('UCTT')
+    google_news.search('UCTT')
+    results = google_news.result(sort=True)
+    links = google_news.get_links()
+    protocol = 'https://'  # appends the protocol if the url if the url is missing it.
+    urls = np.array([protocol + domain if protocol not in domain else domain for domain in links])
+
+    article = Article(urls[1])
     article.download()
     article.parse()
     article.nlp()
 
     summary.config(state='normal')
-
     summary.delete('1.0', 'end')
     summary.insert('1.0', article.summary)
-
     summary.config(state='disabled')
 
     analysis = TextBlob(article.text)
