@@ -1,40 +1,21 @@
-import concurrent.futures
 import multiprocessing
 from matplotlib import pyplot as plt
+from numba.experimental import jitclass
 from textblob import TextBlob
 from newspaper import Article, ArticleException
 from GoogleNews import GoogleNews
 import numpy as np
-from operator import methodcaller
-import statistics
 import time
+from numba import jit
 import nltk
 
 
-# This is the main source code.
-nltk.download('punkt')
-
-
-def beta_save_text(p_article):
-    file1 = open("NewFile.txt", "a")
-    file1.writelines(p_article)
-
-
-def parse_articles(articles):
-    article = Article(articles)
-    article.download()
-    try:
-        article.parse()
-        article.nlp()
-    except:
-        pass
-    return article
+# nltk.download('punkt')
 
 
 class ArticleSentiment:
 
     def __init__(self, start_date, end_date):
-        self.NEUTRAL_VALUE = 0  # Constant Value to be used in conditional statements
         self.start_date = start_date
         self.end_date = end_date
 
@@ -46,8 +27,8 @@ class ArticleSentiment:
         self.links = []
 
         self.url = np.array([])
-        self.google_bucket = np.array([])
-        self.yahoo_bucket = np.array([])
+
+        self.thing = []
 
         self.positive_counter = 0
         self.negative_counter = 0
@@ -64,8 +45,17 @@ class ArticleSentiment:
         self.links = google_news.get_links()
         protocol = 'https://'  # appends the protocol if the url if the url is missing it.
         self.url = np.array([protocol + domain if protocol not in domain else domain for domain in self.links])
-        # self.yahoo_bucket = np.array([domain_yahoo for domain_yahoo in self.url if 'yahoo' in domain_yahoo])
-        # self.google_bucket = np.array([domain_google for domain_google in self.url if 'google' in domain_google])
+
+    @classmethod
+    def parse_articles(cls, articles):
+        article = Article(articles, fetch_images=False)
+        article.download()
+        try:
+            article.parse()
+            article.nlp()
+        except:
+            pass
+        return article
 
     def analyze_sentence(self, article):
         analysis = TextBlob(article.text)
@@ -74,17 +64,18 @@ class ArticleSentiment:
 
     def lexical_article_analyze(self, loop):
         for articles in loop:
-            parsed_article = parse_articles(articles)  # This will return a version of the article that is pre-processed
+            parsed_article = self.parse_articles(articles)
 
             analysis = self.analyze_sentence(parsed_article)  # returns the analyzed version of the article
+            self.thing.append(parsed_article)  # addition
             self.sum_total_polarity += analysis.polarity
             self.summary.append(parsed_article.summary)
 
             for sentence in analysis.sentences:
-                if sentence.polarity > self.NEUTRAL_VALUE:
+                if sentence.polarity > 0:
                     self.positive_counter += 1
                     self.positive_list.append(sentence)
-                elif sentence.polarity < self.NEUTRAL_VALUE:
+                elif sentence.polarity < 0:
                     self.negative_counter += 1
                     self.negative_list.append(sentence)
                 else:
@@ -109,29 +100,42 @@ class ArticleSentiment:
         plt.title("Individual Article Sentiment")
         plt.show()
 
+    def show_pie(self):
+        l = ['Postive', 'Neutral', 'Negative']
+        data = [len(self.positive_list), len(self.neutral_list), len(self.negative_list)]
+        fig = plt.figure(figsize=(10,7))
+        plt.pie(data, labels=l)
+        plt.show()
+
 
 if __name__ == '__main__':
-    print("#of processors", multiprocessing.cpu_count())
-    obj = ArticleSentiment('08/11/2010', '08/11/2021')
+    print("# of processors", multiprocessing.cpu_count())
+    obj = ArticleSentiment('08/01/2010', '08/16/2021')
     obj.search_article_timeframe()
+
     begin = time.time()
-
     p1 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.url))
-    # p2 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.google_bucket))
-    # p3 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.bucket_1))
-    # p4 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.bucket_2))
-
     p1.start()
-    # p2.start()
-    # p3.start()
-    # p4.start()
-
     p1.join()
-    # p2.join()
-    # p3.join()
-    # p4.join()
+    # obj.lexical_article_analyze(obj.url)
 
+    # stats = DisplayStat()
     obj.show_stats()
+    obj.show_pie()
 
     end = time.time()
     print("Total Runtime of the Program is: {:.2f} seconds".format(end - begin))
+
+    with open('NegativeText.txt', 'w') as f:
+        for item in obj.negative_list:
+            f.write("%s\n" % item)
+
+    with open('PositiveText.txt', 'w') as p:
+        for item in obj.positive_list:
+            p.write("%s\n" % item)
+
+    # with open('NeutralText.txt', 'w') as n:
+    #     for item in obj.neutral_list:
+    #         n.write("%c\n" % item)
+
+    # print(obj.neutral_list)

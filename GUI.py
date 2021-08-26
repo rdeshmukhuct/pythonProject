@@ -18,24 +18,35 @@ def summarize():
     from_date = cal_from.get_date()
     to_date = cal_to.get_date()
 
-    d1 = from_date.strftime("%m/%d/%Y")
-    d2 = to_date.strftime("%m/%d/%Y")
+    d1 = from_date.strftime('%m/%d/%Y')
+    d2 = to_date.strftime('%m/%d/%Y')
+    print(d1, " space ", d2)
 
     google_news = GoogleNews()
-    google_news.set_lang('en')
-    google_news.set_time_range(d1, d2)
+
+    google_news.set_time_range(d1,d2)
     google_news.set_encode('utf-8')
     google_news.get_news('UCTT')
     google_news.search('UCTT')
-    results = google_news.result(sort=True)
+
+    results = google_news.get_page()
     links = google_news.get_links()
+    print("Append ",google_news.result())
+    google_news.clear()
     protocol = 'https://'  # appends the protocol if the url if the url is missing it.
     urls = np.array([protocol + domain if protocol not in domain else domain for domain in links])
-
-    article = Article(urls[1])
+    # article = [Article(u) for u in urls]
+    print(len(urls))
+    print("Result",results)
+    print("Length of URL",urls)
+    print("Links", links)
+    article = Article(urls[1], fetch_images=False)
     article.download()
-    article.parse()
-    article.nlp()
+    try:
+        article.parse()
+        article.nlp()
+    except:
+        pass
 
     summary.config(state='normal')
     summary.delete('1.0', 'end')
@@ -52,8 +63,8 @@ def visualize():
     start = dt.datetime(from_date.year, from_date.month, from_date.day)
     end = dt.datetime(to_date.year, to_date.month, to_date.day)
 
-    ticker = text_ticker.get()
-    data = web.DataReader(ticker, 'yahoo', start, end)
+    # ticker = text_ticker.get()
+    data = web.DataReader('UCTT', 'yahoo', start, end)
     data = data[['Open', 'High', 'Low', 'Close']]
 
     data.reset_index(inplace=True)
@@ -62,7 +73,7 @@ def visualize():
     ax = plt.subplot()
     ax.grid(True)
     ax.set_axisbelow(True)
-    ax.set_title('{} Share Price'.format(ticker), color='white')
+    ax.set_title('{} Share Price'.format('UCTT'), color='white')
     ax.figure.canvas.set_window_title("Alpha Version v0.1 Alpha")
     ax.set_facecolor('black')
     ax.figure.set_facecolor('#121212')
@@ -93,11 +104,11 @@ label_ticker.pack()
 text_ticker = Entry(root)
 text_ticker.pack()
 
-ulabel = Label(root, text='URL', font='Roboto')
-ulabel.pack()
+# ulabel = Label(root, text='URL', font='Roboto')
+# ulabel.pack()
 
-utext = Text(root, height=1, width=100)
-utext.pack()
+# utext = Text(root, height=1, width=100)
+# utext.pack()
 
 summary = Text(root, height=20, width=100)
 summary.config(state='disabled', bg='#dddddd')
@@ -106,8 +117,26 @@ summary.pack()
 btn_visualize = Button(root, text="Market Stock", font='Roboto', command=visualize)
 btn_visualize.pack()
 
-btn_summary = Button(root, text="Summarize", font='Roboto', command=summarize)
+btn_summary = Button(root, text="UCT Summary", font='Roboto', command=summarize)
 btn_summary.pack()
+
+
+options = ["Postive Words", "Negative Words", "Neutral Words"]
+clicked = StringVar()
+clicked.set("Options")
+
+#Second Drop button
+drop = OptionMenu(root, clicked, *options)
+drop.pack()
+
+options1 = ["Histogram", "Pie Chart", "Bar Graph"]
+clicked = StringVar()
+clicked.set("Display Data")
+
+drop1 = OptionMenu(root, clicked, *options1)
+drop1.pack()
+
+
 
 root.mainloop()
 

@@ -17,7 +17,7 @@ google_news = GoogleNews()
 
 
 def alpha_save_text(p_article):
-    file1 = open("NewFile.txt", "a")
+    file1 = open("files/NewFile.txt", "a")
     file1.writelines(p_article)
 
 
