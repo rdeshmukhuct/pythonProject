@@ -24,21 +24,21 @@ def summarize():
 
     google_news = GoogleNews()
 
-    google_news.set_time_range(d1,d2)
+    google_news.set_time_range(d1, d2)
     google_news.set_encode('utf-8')
     google_news.get_news('UCTT')
     google_news.search('UCTT')
 
     results = google_news.get_page()
     links = google_news.get_links()
-    print("Append ",google_news.result())
+    print("Append ", google_news.result())
     google_news.clear()
     protocol = 'https://'  # appends the protocol if the url if the url is missing it.
     urls = np.array([protocol + domain if protocol not in domain else domain for domain in links])
     # article = [Article(u) for u in urls]
     print(len(urls))
-    print("Result",results)
-    print("Length of URL",urls)
+    print("Result", results)
+    print("Length of URL", urls)
     print("Links", links)
     article = Article(urls[1], fetch_images=False)
     article.download()
@@ -85,6 +85,23 @@ def visualize():
     plt.show()
 
 
+def show():
+    # mylabel= Label(root, text=clicked.get()).pack()
+    l = ['Postive', 'Neutral', 'Negative']
+    data = [11, 4, 7]
+    fig = plt.figure(figsize=(10, 7))
+    plt.pie(data, labels=l)
+    plt.show()
+
+
+def selected(event):
+    myLabel = Label(root, text=clicked.get()).pack()
+    if clicked.get() == "Positive Words":
+        show()
+    elif clicked.get() ==  "Negative Words":
+        summarize()
+
+
 root = Tk()
 
 root.title("Stock Market version 1")
@@ -120,22 +137,22 @@ btn_visualize.pack()
 btn_summary = Button(root, text="UCT Summary", font='Roboto', command=summarize)
 btn_summary.pack()
 
-
-options = ["Postive Words", "Negative Words", "Neutral Words"]
+options = ["Positive Words", "Negative Words", "Neutral Words"]
 clicked = StringVar()
 clicked.set("Options")
 
-#Second Drop button
-drop = OptionMenu(root, clicked, *options)
-drop.pack()
+drop = OptionMenu(root, clicked, *options, command=selected)
+drop.pack(pady=20)
 
-options1 = ["Histogram", "Pie Chart", "Bar Graph"]
-clicked = StringVar()
-clicked.set("Display Data")
+# myButton = Button(root, text="Show Selection", command=show).pack()
 
-drop1 = OptionMenu(root, clicked, *options1)
-drop1.pack()
 
+# options1 = ["Histogram", "Pie Chart", "Bar Graph"]
+# clicked = StringVar()
+# clicked.set("Display Data")
+#
+# drop1 = OptionMenu(root, clicked, *options1)
+# drop1.pack()
 
 
 root.mainloop()
