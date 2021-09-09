@@ -15,7 +15,7 @@ c = conn.cursor()
 
 # The main purpose of GUIFnctions() is to assistn GUI.py when calling functions and to reduce class size
 # It calls upon main.py
-class GUIFunctions():
+class GUIFunctions:
     ob = main.MostCommonWords()
 
     # search_articles(): takes zero arguments and return a list of parsed urls called urls.
@@ -24,15 +24,15 @@ class GUIFunctions():
     # specified data. The reason they arent passed as arguments in the class is because we don't want the users, to be
     # able to modify that data.
     def search_articles(self):
-        d1 = '08/01/2021'
-        d2 = '08/16/2021'
+        start_date = '08/01/2021'  # Format must be MM/DD/YYYY, User can change
+        end_date = '08/16/2021'  # Format must be MM//DD/YYYY, User can change
 
         google_news = GoogleNews()
 
-        google_news.set_time_range(d1, d2)
+        google_news.set_time_range(start_date, end_date)  # You can hard code the Dates here or at the top
         google_news.set_encode('utf-8')
-        google_news.get_news('UCTT')
-        google_news.search('UCTT')
+        google_news.get_news('UCTT')  # This Can be changed to any Company Ticker
+        google_news.search('UCTT')  # Change this to the Company Ticker above
 
         results = google_news.get_page()
         links = google_news.get_links()
@@ -41,10 +41,13 @@ class GUIFunctions():
         protocol = 'https://'  # appends the protocol if the url if the url is missing it.
         # urls = np.array([protocol + domain if protocol not in domain else domain for domain in links])
         urls = [protocol + domain if protocol not in domain else domain for domain in links]
-        for i in google_news.result():
-            c.execute("INSERT INTO test VALUES (:title, :desc, :date, :datetime, :link, :img, :media, :site)", i)
-        c.execute("SELECT * FROM test WHERE date='Aug 27'")
-        print(c.fetchone())
+
+        # Ignore the following few lines, I am just playing around with this.
+        # for i in google_news.result():
+        #   c.execute("INSERT INTO test VALUES (:title, :desc, :date, :datetime, :link, :img, :media, :site)", i)
+        # c.execute("SELECT * FROM test WHERE date='Aug 27'")
+        # print(c.fetchone())
+
         return urls
 
     # visualize(): takes zero arguments and returns no data.
@@ -79,7 +82,7 @@ class GUIFunctions():
     # It displays a pie chart
     def pie_chart(self, datalist):
         l = ['Postive', 'Negative', 'Neutral']
-        #data = self.read_lines()
+        # data = self.read_lines()
         data = datalist
         fig = plt.figure(figsize=(10, 7))
         ax = plt.subplot()
