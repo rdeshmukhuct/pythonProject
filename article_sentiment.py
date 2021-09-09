@@ -1,16 +1,14 @@
-import multiprocessing
-from matplotlib import pyplot as plt
-from numba.experimental import jitclass
-from textblob import TextBlob
 from newspaper import Article, ArticleException
+from matplotlib import pyplot as plt
 from GoogleNews import GoogleNews
+from textblob import TextBlob
+import multiprocessing
 import numpy as np
 import time
-from numba import jit
-import nltk
-
+import article_analysis
 
 # nltk.download('punkt')
+oc = article_analysis.GUIFunctions()
 
 
 class ArticleSentiment:
@@ -101,11 +99,14 @@ class ArticleSentiment:
         plt.show()
 
     def show_pie(self):
-        l = ['Postive', 'Neutral', 'Negative']
-        data = [len(self.positive_list), len(self.neutral_list), len(self.negative_list)]
-        fig = plt.figure(figsize=(10,7))
-        plt.pie(data, labels=l)
-        plt.show()
+        data = [len(self.positive_list), len(self.negative_list), len(self.neutral_list)]
+        oc.pie_chart(data)
+
+    def store_sentiment_data(self):
+        data = [len(self.positive_list), len(self.negative_list), len(self.neutral_list)]
+        with open('data.txt', 'w') as f:
+            for item in data:
+                f.write("%d\n" % item)
 
 
 if __name__ == '__main__':
@@ -136,6 +137,7 @@ if __name__ == '__main__':
 
     # with open('NeutralText.txt', 'w') as n:
     #     for item in obj.neutral_list:
-    #         n.write("%c\n" % item)
+    #         n.write("%s\n" % item)
 
-    # print(obj.neutral_list)
+    print(len(obj.neutral_list))
+    obj.store_sentiment_data()
