@@ -1,46 +1,22 @@
-import datetime as dt
 from tkinter import *
-
+from tkinter import ttk
 from newspaper import Article
 from textblob import TextBlob
-from tkcalendar import DateEntry
+import main
+import article_analysis
+import sqlite3 as lite
 
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-import pandas_datareader as web
-from mplfinance.original_flavor import candlestick_ochl
-
-from GoogleNews import GoogleNews
-import numpy as np
+ob = main.MostCommonWords()
+obj = article_analysis.GUIFunctions()
 
 
+# summarize(): takes zero arguments and returns nothing
+# it displays the summarize article from a list of scraped article from google.
+# it calls the class article_analysis.py
 def summarize():
-    from_date = cal_from.get_date()
-    to_date = cal_to.get_date()
+    first_article_in_list = obj.search_articles()
+    article = Article(first_article_in_list[0], fetch_images=False)
 
-    d1 = from_date.strftime('%m/%d/%Y')
-    d2 = to_date.strftime('%m/%d/%Y')
-    print(d1, " space ", d2)
-
-    google_news = GoogleNews()
-
-    google_news.set_time_range(d1, d2)
-    google_news.set_encode('utf-8')
-    google_news.get_news('UCTT')
-    google_news.search('UCTT')
-
-    results = google_news.get_page()
-    links = google_news.get_links()
-    print("Append ", google_news.result())
-    google_news.clear()
-    protocol = 'https://'  # appends the protocol if the url if the url is missing it.
-    urls = np.array([protocol + domain if protocol not in domain else domain for domain in links])
-    # article = [Article(u) for u in urls]
-    print(len(urls))
-    print("Result", results)
-    print("Length of URL", urls)
-    print("Links", links)
-    article = Article(urls[1], fetch_images=False)
     article.download()
     try:
         article.parse()
@@ -56,105 +32,59 @@ def summarize():
     analysis = TextBlob(article.text)
 
 
-def visualize():
-    from_date = cal_from.get_date()
-    to_date = cal_to.get_date()
-
-    start = dt.datetime(from_date.year, from_date.month, from_date.day)
-    end = dt.datetime(to_date.year, to_date.month, to_date.day)
-
-    # ticker = text_ticker.get()
-    data = web.DataReader('UCTT', 'yahoo', start, end)
-    data = data[['Open', 'High', 'Low', 'Close']]
-
-    data.reset_index(inplace=True)
-    data['Date'] = data['Date'].map(mdates.date2num)
-
-    ax = plt.subplot()
-    ax.grid(True)
-    ax.set_axisbelow(True)
-    ax.set_title('{} Share Price'.format('UCTT'), color='white')
-    ax.figure.canvas.set_window_title("Alpha Version v0.1 Alpha")
-    ax.set_facecolor('black')
-    ax.figure.set_facecolor('#121212')
-    ax.tick_params(axis='x', colors='white')
-    ax.tick_params(axis='y', colors='white')
-    ax.xaxis_date()
-
-    candlestick_ochl(ax, data.values, width=0.5, colorup='#00ff00')
-    plt.show()
-
-
-def show():
-    # mylabel= Label(root, text=clicked.get()).pack()
-    l = ['Postive', 'Neutral', 'Negative']
-    data = [11, 4, 7]
-    fig = plt.figure(figsize=(10, 7))
-    plt.pie(data, labels=l)
-    plt.show()
-
-
+# selected(): takes one argument in the form of <class 'tkinter.Event'> and returns nothing.
+# selected(): allows for the user to create a user event when the GUI is running.
+# When the drop down-menu is display this function executes and depending on what the user
+# enter will trigger an action to Display. For example a pie chart or a bar Graph of the top ten words
+# in a article that has been pre-parsed. It calls two separate classes,
+# It calls article_analysis.py & main.py
 def selected(event):
-    myLabel = Label(root, text=clicked.get()).pack()
-    if clicked.get() == "Positive Words":
-        show()
-    elif clicked.get() ==  "Negative Words":
+    print(type(event))
+    if myCombo.get() == "Pie Chart":
+        values = obj.read_lines()
+        obj.pie_chart(values)
+    elif myCombo.get() == "Bar Graph":
+        ob.enter_file(textFile.get())
+        ob.stopwords()
+    elif myCombo.get() == "Market Stock":
+        obj.visualize()
+    elif myCombo.get() == "Summary":
         summarize()
 
 
 root = Tk()
 
-root.title("Stock Market version 1")
-
-label_from = Label(root, text='From:', font='Roboto')
-label_from.pack()
-cal_from = DateEntry(root, width=50, year=2020, month=1, day=1)
-cal_from.pack(padx=10, pady=10)
-
-label_to = Label(root, text="To:", font='Roboto')
-label_to.pack()
-cal_to = DateEntry(root, width=50)
-cal_to.pack(padx=10, pady=10)
+root.title("Stock Market version 10")
 
 label_ticker = Label(root, text="Ticker Symbol", font='Roboto')
 label_ticker.pack()
-text_ticker = Entry(root)
+text_ticker = Label(root, text="Ultra Clean Technology(UCTT)", font='Roboto')
 text_ticker.pack()
-
-# ulabel = Label(root, text='URL', font='Roboto')
-# ulabel.pack()
-
-# utext = Text(root, height=1, width=100)
-# utext.pack()
 
 summary = Text(root, height=20, width=100)
 summary.config(state='disabled', bg='#dddddd')
 summary.pack()
 
-btn_visualize = Button(root, text="Market Stock", font='Roboto', command=visualize)
-btn_visualize.pack()
+options = ["Market Stock", "Pie Chart", "Bar Graph", "Summary"]
+txtFile = ['PositiveText.txt', 'NegativeText.txt', 'NeutralText.txt']
 
-btn_summary = Button(root, text="UCT Summary", font='Roboto', command=summarize)
-btn_summary.pack()
-
-options = ["Positive Words", "Negative Words", "Neutral Words"]
 clicked = StringVar()
 clicked.set("Options")
 
-drop = OptionMenu(root, clicked, *options, command=selected)
-drop.pack(pady=20)
+label_options = Label(root, text="Options", font='Roboto')
+label_options.pack()
 
-# myButton = Button(root, text="Show Selection", command=show).pack()
+myCombo = ttk.Combobox(root, value=options)
+myCombo.current(0)
+myCombo.bind("<<ComboboxSelected>>", selected)
+myCombo.pack()
 
+label_info = Label(root, text="Articles", font='Roboto')
+label_info.pack()
 
-# options1 = ["Histogram", "Pie Chart", "Bar Graph"]
-# clicked = StringVar()
-# clicked.set("Display Data")
-#
-# drop1 = OptionMenu(root, clicked, *options1)
-# drop1.pack()
-
+textFile = ttk.Combobox(root, value=txtFile)
+textFile.current(0)
+textFile.bind("<<TextSelected>>", ob.enter_file)
+textFile.pack()
 
 root.mainloop()
-
-# https://finance.yahoo.com/news/ultra-clean-reports-second-quarter-200500903.html
