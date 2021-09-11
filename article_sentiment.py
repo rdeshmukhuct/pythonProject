@@ -11,6 +11,12 @@ import article_analysis
 oc = article_analysis.GUIFunctions()
 
 
+# ReadMe -> This class analyzes the polarity and sentiment of each article scarped form the internet
+# the ranking system is on a scale from [-1, 1] with 0 in between.
+# When the value is Zero the article sentiment is Neutral
+# if the value is within the range of (0, 1] then sentiment is positive and the closer the value is to 1 the stronger
+# if the value is withing the range of [-1, 0) then sentiment is negative and the closer to -1 the more negative it is.
+
 class ArticleSentiment:
 
     def __init__(self, start_date, end_date):
@@ -23,9 +29,7 @@ class ArticleSentiment:
         self.analysis_polarity = []  # saves the numerical value of the article polarity.
         self.summary = []
         self.links = []
-
         self.url = np.array([])
-
         self.thing = []
 
         self.positive_counter = 0
@@ -33,6 +37,8 @@ class ArticleSentiment:
         self.neutral_counter = 0
         self.sum_total_polarity = 0
 
+    # This can also be change later. article_analysis.py has the same function
+    # Read the documentation in article_analysis.py for more information
     def search_article_timeframe(self):
         google_news = GoogleNews()
         google_news.set_lang('en')
@@ -44,6 +50,9 @@ class ArticleSentiment:
         protocol = 'https://'  # appends the protocol if the url if the url is missing it.
         self.url = np.array([protocol + domain if protocol not in domain else domain for domain in self.links])
 
+    # parse_articles() takes one argument which is the text file from the list and returns the processed article
+    # This is the most costly and time consuming function in the class, because of parse() and nlp() which
+    # take the most amount of time to compute. time to compute is usually greater than 70 seconds
     @classmethod
     def parse_articles(cls, articles):
         article = Article(articles, fetch_images=False)
@@ -55,11 +64,18 @@ class ArticleSentiment:
             pass
         return article
 
+    # analyze_sentence(): takes one argument index from list and returns the analysis in the index
+    # this function is called by lexical_article_analyze()
     def analyze_sentence(self, article):
         analysis = TextBlob(article.text)
         self.analysis_polarity.append(analysis.polarity)
         return analysis
 
+    # lexical_article_analyze(): takes one argument in the form of a list, and returns nothing.
+    # This function calls upon two other functions within article_sentiment.py
+    # It calls ArticleSentiment.parsed_articles() and then ArticleSentiment.analyze_sentence()
+    # The main purpose of this function is to parse and analyze the scraped articles form the internet
+    # Once the articles ae parsed its then append into its sentiment list in the second for loop.
     def lexical_article_analyze(self, loop):
         for articles in loop:
             parsed_article = self.parse_articles(articles)
@@ -80,6 +96,11 @@ class ArticleSentiment:
                     self.neutral_counter += 1
                     self.neutral_list.append(sentence)
 
+    # show_stats(): takes zero arguments
+    # This function displays information about the scraped articles after they have been parsed and passed through the
+    # natural language processor
+    # Shows the number of positive/negative/neutral sentiment sentences in each article,
+    # Mean score of all the articles, and sum total
     def show_stats(self):
         total_review_sentences = (self.positive_counter + self.negative_counter + self.neutral_counter)
         print("Date Range from {} to {}".format(self.start_date, self.end_date))
@@ -91,6 +112,8 @@ class ArticleSentiment:
         print("Sum Total Article Review: {:.2f}".format(self.sum_total_polarity))
         print("Average Score Review: {:.3}".format(self.sum_total_polarity / len(self.links)))
 
+    # show_histogram(): takes zero arguments and returns nothing
+    # shows a histogram of article polarity
     def show_histogram(self):
         a = np.array(self.analysis_polarity)
         fig, ax = plt.subplots(figsize=(10, 7))
@@ -98,10 +121,12 @@ class ArticleSentiment:
         plt.title("Individual Article Sentiment")
         plt.show()
 
+    # This function can be removed because article_analysis.py has a pie chart function that does the same thing.
     def show_pie(self):
         data = [len(self.positive_list), len(self.negative_list), len(self.neutral_list)]
         oc.pie_chart(data)
 
+    # store_sentiment_data() saves then length of each sentiment to a text file so GUI.py can use it for UX
     def store_sentiment_data(self):
         data = [len(self.positive_list), len(self.negative_list), len(self.neutral_list)]
         with open('data.txt', 'w') as f:
@@ -109,6 +134,8 @@ class ArticleSentiment:
                 f.write("%d\n" % item)
 
 
+# if trying to run this with multiprocessing you must use the following command for it to run
+# if __name__ == '__main__':
 if __name__ == '__main__':
     print("# of processors", multiprocessing.cpu_count())
     obj = ArticleSentiment('08/01/2010', '08/16/2021')

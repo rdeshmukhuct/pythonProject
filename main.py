@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from nltk.stem import WordNetLemmatizer
 
 
+# MostCommonWords() finds the most common words in a text file
 # Read input file, note the encoding is specified here
 # It may be different in your text file
 
@@ -43,14 +44,17 @@ class MostCommonWords(object):
                     wordcount[word] = 1
                 else:
                     wordcount[word] += 1
+
         # Print most common word
         # n_print = int(input("How many most common words to print: "))
         # print("\nOK. The {} most common words are as follows\n".format(n_print))
         word_counter = collections.Counter(wordcount)
         for word, count in word_counter.most_common(10):  # (n_print):
             print(word, ": ", count)
+
         # Close the file
         self.file.close()
+
         # Create a data frame of the most common words
         # Draw a bar chart
         lst = word_counter.most_common(10)  # (n_print)
