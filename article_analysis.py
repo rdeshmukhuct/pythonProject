@@ -17,6 +17,7 @@ c = conn.cursor()
 # It calls upon main.py
 
 class GUIFunctions:
+    print("You are in the article_analysis.py - GUIFunctions")
     ob = main.MostCommonWords()
 
     # search_articles(): takes zero arguments and return a list of parsed urls called urls as well as list[dict{}].
@@ -31,8 +32,8 @@ class GUIFunctions:
         google_news = GoogleNews()
         google_news.set_time_range(start_date, end_date)  # You can hard code the Dates here or at the top
         google_news.set_encode('utf-8')
-        google_news.get_news('hamlet (israel-canada) ltd ')  # This Can be changed to any Company Ticker
-        google_news.search('hamlet (israel-canada) ltd')  # Change this to the Company Ticker above
+        google_news.get_news('UCTT ham-let ltd ')  # This Can be changed to any Company Ticker
+        google_news.search('UCTT ham-let ltd')  # Change this to the Company Ticker above
         links = google_news.get_links()
         result = google_news.result()
         google_news.clear()
@@ -74,15 +75,35 @@ class GUIFunctions:
     # negative, positive, and neutral sentiment articles that were pre computed in article_sentiment().
     # It displays a pie chart
     def pie_chart(self, datalist):
+        fig, (ax, ax1) = plt.subplots(1, 2, figsize=(10, 10))
+
+        # bar graph to visualise data
         type_of_sentiment = ['Positive', 'Negative', 'Neutral']
         data = datalist
-        fig = plt.figure(figsize=(10, 7))
-        ax = plt.subplot()
-        wp = {'linewidth': 1, 'edgecolor': 'black'}
-        plt.pie(data, autopct=lambda length: self.get_article_length(length, data), labels=type_of_sentiment,
-                wedgeprops=wp)
+        rects = ax.bar(l, data)
         ax.set_title("Sentiment Article Analysis of Scraped Data ")
+
+        for rect, label in zip(rects, data):
+            height = rect.get_height()
+            ax.text(rect.get_x() + rect.get_width() / 2, height, label, ha='center', va='bottom')
+
+        # Pie chart for data visualisation
+        ax1.pie(datalist, labels=l, autopct='%1.1f%%', shadow=True, startangle=90)
+        ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        ax1.set_title("Sentiment Article Analysis of Scraped Data ")
+
         plt.show()
+
+
+        # type_of_sentiment = ['Positive', 'Negative', 'Neutral']
+        # data = datalist
+        # fig = plt.figure(figsize=(10, 7))
+        # ax = plt.subplot()
+        # wp = {'linewidth': 1, 'edgecolor': 'black'}
+        # plt.pie(data, autopct=lambda length: self.get_article_length(length, data), labels=type_of_sentiment,
+        #        wedgeprops=wp)
+        # ax.set_title("Sentiment Article Analysis of Scraped Data ")
+        # plt.show()
 
     @classmethod
     def get_article_length(cls, length, values):
