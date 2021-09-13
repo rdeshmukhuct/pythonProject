@@ -6,6 +6,13 @@ import multiprocessing
 import numpy as np
 import time
 import article_analysis
+import datetime as dt
+from tkinter import *
+from tkcalendar import DateEntry
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import pandas_datareader as web
+from mplfinance.original_flavor import candlestick_ochl
 
 # nltk.download('punkt')
 oc = article_analysis.GUIFunctions()
@@ -44,8 +51,8 @@ class ArticleSentiment:
         google_news.set_lang('en')
         google_news.set_time_range(self.start_date, self.end_date)
         google_news.set_encode('utf-8')
-        google_news.get_news('hamlet (israel-canada) ltd')
-        google_news.search('hamlet (israel-canada) ltd')
+        google_news.get_news('UCTT ham-let ltd')
+        google_news.search('UCTT ham-let ltd')
         self.links = google_news.get_links()
         protocol = 'https://'  # appends the protocol if the url if the url is missing it.
         self.url = np.array([protocol + domain if protocol not in domain else domain for domain in self.links])
@@ -59,7 +66,21 @@ class ArticleSentiment:
         article.download()
         try:
             article.parse()
+            text = TextBlob(article.text)
+            # added this just to get the entire text from all the articles that  we have scraped
+            with open('EntireText.txt', 'a') as e:
+                try:
+                    e.write("%s\n" % text)
+                except:
+                    pass
+
             article.nlp()
+            # added this to get the summary of all the articles
+            with open('SummaryText.txt', 'a') as s:
+                try:
+                    s.write("%s\n" % text)
+                except:
+                    pass
         except:
             pass
         return article
@@ -136,35 +157,65 @@ class ArticleSentiment:
 
 # if trying to run this with multiprocessing you must use the following command for it to run
 # if __name__ == '__main__':
-if __name__ == '__main__':
-    print("# of processors", multiprocessing.cpu_count())
-    obj = ArticleSentiment('08/01/2010', '08/16/2021')
-    obj.search_article_timeframe()
 
-    begin = time.time()
-    p1 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.url))
-    p1.start()
-    p1.join()
+# added the feature where instead of hardcoding the dates the user can select the dates and
+# the articles will be scraped based on that dates
+if __name__ == '__main__':
+    def call ():
+        from_date = cal_from.get_date()
+        to_date = cal_to.get_date()
+        print("# of processors", multiprocessing.cpu_count())
+        obj = ArticleSentiment(from_date, to_date)
+        obj.search_article_timeframe()
+
+        begin = time.time()
+        p1 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.url))
+        p1.start()
+        p1.join()
     # obj.lexical_article_analyze(obj.url)
 
     # stats = DisplayStat()
-    obj.show_stats()
-    obj.show_pie()
+        obj.show_stats()
+        obj.show_pie()
 
-    end = time.time()
-    print("Total Runtime of the Program is: {:.2f} seconds".format(end - begin))
+        end = time.time()
+        print("Total Runtime of the Program is: {:.2f} seconds".format(end - begin))
 
-    with open('NegativeText.txt', 'w') as f:
-        for item in obj.negative_list:
-            f.write("%s\n" % item)
+        with open('NegativeText.txt', 'w') as f:
+            for item in obj.negative_list:
+                try:
+                    f.write("%s\n" % item)
+                except:
+                     pass
 
-    with open('PositiveText.txt', 'w') as p:
-        for item in obj.positive_list:
-            p.write("%s\n" % item)
+        with open('PositiveText.txt', 'w') as p:
+            for item in obj.positive_list:
+                try:
+                    p.write("%s\n" % item)
+                except:
+                     pass
 
-    # with open('NeutralText.txt', 'w') as n:
-    #     for item in obj.neutral_list:
-    #         n.write("%s\n" % item)
+        with open('NeutralText.txt', 'w') as n:
+            for item in obj.neutral_list:
+                try:
+                    n.write("%s\n" % item)
+                except:
+                    pass
 
-    print(len(obj.neutral_list))
-    obj.store_sentiment_data()
+        print(len(obj.neutral_list))
+        obj.store_sentiment_data()
+    root = Tk()
+    root.title("Reviews")
+    label_from = Label(root, text='From:', font='Roboto')
+    label_from.pack()
+    cal_from = DateEntry(root, width=50, year=2020, month=1, day=1)
+    cal_from.pack(padx=10, pady=10)
+
+    label_to = Label(root, text="To:", font='Roboto')
+    label_to.pack()
+    cal_to = DateEntry(root, width=50)
+    cal_to.pack(padx=10, pady=10)
+
+    btn_call = Button(root, text="Submit", font='Roboto', command=call)
+    btn_call.pack()
+    root.mainloop()

@@ -59,7 +59,7 @@ news_paper_title = [key['title'] for key in results]
 # GUI functionality begins here, This is what displays everything
 root = Tk()
 
-root.title("Stock Market version 20")
+root.title("Ham-Let")
 
 label_ticker = Label(root, text="Ticker Symbol", font='Roboto')
 label_ticker.pack()
