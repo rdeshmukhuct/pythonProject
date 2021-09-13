@@ -68,19 +68,19 @@ class ArticleSentiment:
             article.parse()
             text = TextBlob(article.text)
             # added this just to get the entire text from all the articles that  we have scraped
-            with open('EntireText.txt', 'a') as e:
-                try:
-                    e.write("%s\n" % text)
-                except:
-                    pass
+            #with open('EntireText.txt', 'a') as e:
+            #    try:
+            #        e.write("%s\n" % text)
+            #   except:
+            #        pass
 
             article.nlp()
             # added this to get the summary of all the articles
-            with open('SummaryText.txt', 'a') as s:
-                try:
-                    s.write("%s\n" % text)
-                except:
-                    pass
+            #with open('SummaryText.txt', 'a') as s:
+            #   try:
+            #        s.write("%s\n" % text)
+            #    except:
+            #        pass
         except:
             pass
         return article
@@ -181,20 +181,19 @@ if __name__ == '__main__':
         end = time.time()
         print("Total Runtime of the Program is: {:.2f} seconds".format(end - begin))
 
+        with open('PositiveText.txt', 'w') as p:
+            for item in obj.positive_list:
+                try:
+                    p.write("%s\n" % item)
+                except:
+                    pass
+
         with open('NegativeText.txt', 'w') as f:
             for item in obj.negative_list:
                 try:
                     f.write("%s\n" % item)
                 except:
                      pass
-
-        with open('PositiveText.txt', 'w') as p:
-            for item in obj.positive_list:
-                try:
-                    p.write("%s\n" % item)
-                except:
-                     pass
-
         with open('NeutralText.txt', 'w') as n:
             for item in obj.neutral_list:
                 try:
@@ -204,6 +203,7 @@ if __name__ == '__main__':
 
         print(len(obj.neutral_list))
         obj.store_sentiment_data()
+
     root = Tk()
     root.title("Reviews")
     label_from = Label(root, text='From:', font='Roboto')
