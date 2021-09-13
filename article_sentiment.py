@@ -44,8 +44,8 @@ class ArticleSentiment:
         google_news.set_lang('en')
         google_news.set_time_range(self.start_date, self.end_date)
         google_news.set_encode('utf-8')
-        google_news.get_news('UCTT')
-        google_news.search('UCTT')
+        google_news.get_news('hamlet (israel-canada) ltd')
+        google_news.search('hamlet (israel-canada) ltd')
         self.links = google_news.get_links()
         protocol = 'https://'  # appends the protocol if the url if the url is missing it.
         self.url = np.array([protocol + domain if protocol not in domain else domain for domain in self.links])

@@ -31,8 +31,8 @@ class GUIFunctions:
         google_news = GoogleNews()
         google_news.set_time_range(start_date, end_date)  # You can hard code the Dates here or at the top
         google_news.set_encode('utf-8')
-        google_news.get_news('Ham-let')  # This Can be changed to any Company Ticker
-        google_news.search('UCTT')  # Change this to the Company Ticker above
+        google_news.get_news('hamlet (israel-canada) ltd ')  # This Can be changed to any Company Ticker
+        google_news.search('hamlet (israel-canada) ltd')  # Change this to the Company Ticker above
         links = google_news.get_links()
         result = google_news.result()
         google_news.clear()
@@ -48,6 +48,7 @@ class GUIFunctions:
     # data = web.DataReader('Company_Ticker', 'yahoo', 'Change_Start_Date', 'Change_End_Date')
     @classmethod
     def visualize(cls):
+        # HAML ticker not found, so using UCTT for debugging purposes
         data = web.DataReader('UCTT', 'yahoo', '08/01/2021', '08/16/2021')
         data = data[['Open', 'High', 'Low', 'Close']]
 
