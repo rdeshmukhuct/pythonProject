@@ -10,9 +10,17 @@ import datetime as dt
 from tkinter import *
 from tkcalendar import DateEntry
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-import pandas_datareader as web
-from mplfinance.original_flavor import candlestick_ochl
+import string
+from nltk.sentiment import SentimentIntensityAnalyzer
+import nltk
+
+from nltk.tokenize.treebank import TreebankWordDetokenizer
+# nltk.download('vader_lexicon')
+
+# download the stopwords
+from nltk.corpus import stopwords
+# nltk.download('stopwords')
+from nltk.tokenize import word_tokenize
 
 # nltk.download('punkt')
 oc = article_analysis.GUIFunctions()
@@ -97,6 +105,7 @@ class ArticleSentiment:
     # It calls ArticleSentiment.parsed_articles() and then ArticleSentiment.analyze_sentence()
     # The main purpose of this function is to parse and analyze the scraped articles form the internet
     # Once the articles ae parsed its then append into its sentiment list in the second for loop.
+    # loop here contains the links to all the articles
     def lexical_article_analyze(self, loop):
         for articles in loop:
             parsed_article = self.parse_articles(articles)
@@ -106,16 +115,49 @@ class ArticleSentiment:
             self.sum_total_polarity += analysis.polarity
             self.summary.append(parsed_article.summary)
 
+
+            # For better sentimental analysis result, we will preprocess data,
+            # and use SentimentIntensityAnalyzer from nltk
+            # lower case, remove punctuations and stop words
             for sentence in analysis.sentences:
-                if sentence.polarity > 0:
-                    self.positive_counter += 1
-                    self.positive_list.append(sentence)
-                elif sentence.polarity < 0:
-                    self.negative_counter += 1
-                    self.negative_list.append(sentence)
-                else:
-                    self.neutral_counter += 1
-                    self.neutral_list.append(sentence)
+                analysis = str(sentence)
+                # pre processing data nlp
+                # lower case
+                analysis = analysis.lower()
+
+                try:
+                    # remove punctuations
+                    analysis = analysis.translate(str.maketrans('', '', string.punctuation))
+                    analysis = str(analysis)
+                    # tokenize the sentence
+                    text_tokens = word_tokenize(analysis)
+
+                    stopwords = set(nltk.corpus.stopwords.words('english'))
+                    # remove stop words from the text
+                    tokens_without_sw = [word for word in text_tokens if not word in stopwords]
+                    # detokenize conver the tokenize version of text into normal sentence without stopwords
+                    text = TreebankWordDetokenizer().detokenize(tokens_without_sw)
+
+                    # get the sentimental score
+                    sia = SentimentIntensityAnalyzer()
+                    score = sia.polarity_scores(text)
+
+                    # positive
+                    if score['compound'] > 0:
+                        self.positive_counter += 1
+                        self.positive_list.append(text)
+                    # negative
+                    elif score['compound'] < 0:
+                        self.negative_counter += 1
+                        self.negative_list.append(text)
+                    # neutral
+                    else:
+                        self.neutral_counter += 1
+                        self.neutral_list.append(text)
+                except:
+                    print("some error")
+                    pass
+
 
     # show_stats(): takes zero arguments
     # This function displays information about the scraped articles after they have been parsed and passed through the
@@ -204,6 +246,9 @@ if __name__ == '__main__':
         print(len(obj.neutral_list))
         obj.store_sentiment_data()
 
+    # Instead of hardcoding the dates we will provide the option to the user
+    # to select dates and the articles will be scraped based on
+    # these dates.
     root = Tk()
     root.title("Reviews")
     label_from = Label(root, text='From:', font='Roboto')

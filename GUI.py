@@ -38,7 +38,7 @@ def summarize(url):
 # It calls article_analysis.py & main.py
 def selected(event):
     print(type(event))
-    if myCombo.get() == "Pie Chart":
+    if myCombo.get() == "Data Visualization":
         values = obj.read_lines()
         obj.pie_chart(values)
     elif myCombo.get() == "Bar Graph":
@@ -70,7 +70,7 @@ summary = Text(root, height=20, width=100)
 summary.config(state='disabled', bg='#dddddd')
 summary.pack()
 
-options = ["Market Stock", "Pie Chart", "Bar Graph", "Summary"]
+options = ["Market Stock", "Data Visualization", "Bar Graph", "Summary"]
 txtFile = ['PositiveText.txt', 'NegativeText.txt', 'NeutralText.txt']
 title_and_url_dict = dict(zip(news_paper_title, urls))
 

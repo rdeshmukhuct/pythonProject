@@ -81,7 +81,7 @@ class GUIFunctions:
         type_of_sentiment = ['Positive', 'Negative', 'Neutral']
         data = datalist
         rects = ax.bar(type_of_sentiment, data)
-        ax.set_title("Sentiment Article Analysis of Scraped Data ")
+        ax.set_title("Bar graph for Sentiment Article Analysis ")
 
         for rect, label in zip(rects, data):
             height = rect.get_height()
@@ -90,7 +90,7 @@ class GUIFunctions:
         # Pie chart for data visualisation
         ax1.pie(datalist, labels=type_of_sentiment, autopct='%1.1f%%', shadow=True, startangle=90)
         ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-        ax1.set_title("Sentiment Article Analysis of Scraped Data ")
+        ax1.set_title("Pie chart for Sentiment Article Analysis ")
 
         plt.show()
 
