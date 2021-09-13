@@ -19,7 +19,7 @@ c = conn.cursor()
 class GUIFunctions:
     ob = main.MostCommonWords()
 
-    # search_articles(): takes zero arguments and return a list of parsed urls called urls.
+    # search_articles(): takes zero arguments and return a list of parsed urls called urls as well as list[dict{}].
     # d1 and d2 are dates that the user can change to get different articles from different dates.
     # google_news.get_news('UCTT') and google_news.search('UCTT') both take in the ticker argument to scrape for the
     # specified data. The reason they arent passed as arguments in the class is because we don't want the users, to be
@@ -33,13 +33,13 @@ class GUIFunctions:
         google_news.set_encode('utf-8')
         google_news.get_news('UCTT')  # This Can be changed to any Company Ticker
         google_news.search('UCTT')  # Change this to the Company Ticker above
-        results = google_news.get_page()
         links = google_news.get_links()
-        print("Append ", google_news.result())
+        result = google_news.result()
         google_news.clear()
+
         protocol = 'https://'  # appends the protocol if the url if the url is missing it.
         urls = [protocol + domain if protocol not in domain else domain for domain in links]
-        return urls
+        return urls, result
 
     # visualize(): takes zero arguments and returns no data.
     # its primary task is to get the current stock price of the company.
@@ -92,12 +92,12 @@ class GUIFunctions:
     # refer to documentation above GUIFunction.pie_chart()
     @classmethod
     def read_lines(cls):
-        list = []
+        len_of_articles_list = []
         file1 = open('data.txt', 'r')
         lines = file1.readlines()
         count = 0
         for line in lines:
             count += 1
-            list.append(line.strip())
-        values = [int(i) for i in list]
+            len_of_articles_list.append(line.strip())
+        values = [int(i) for i in len_of_articles_list]
         return values

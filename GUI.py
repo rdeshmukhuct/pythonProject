@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter import ttk
+
+import newspaper
 from newspaper import Article
 from textblob import TextBlob
 import main
@@ -10,26 +12,22 @@ ob = main.MostCommonWords()
 obj = article_analysis.GUIFunctions()
 
 
-# summarize(): takes zero arguments and returns nothing
+# summarize(): takes one arguments which is a url from a selected title and returns nothing
 # it displays the summarize article from a list of scraped article from google.
 # it calls the class article_analysis.py
-def summarize():
-    first_article_in_list = obj.search_articles()
-    article = Article(first_article_in_list[0], fetch_images=False)
-
+def summarize(url):
+    print("Summarize()", url)
+    article = Article(url)
     article.download()
-    try:
-        article.parse()
-        article.nlp()
-    except:
-        pass
-
+    article.parse()
+    article.nlp()
     summary.config(state='normal')
     summary.delete('1.0', 'end')
     summary.insert('1.0', article.summary)
     summary.config(state='disabled')
+    summary.option_clear()
 
-    analysis = TextBlob(article.text)
+    # analysis = TextBlob(article.text)
 
 
 # selected(): takes one argument in the form of <class 'tkinter.Event'> and returns nothing.
@@ -49,12 +47,19 @@ def selected(event):
     elif myCombo.get() == "Market Stock":
         obj.visualize()
     elif myCombo.get() == "Summary":
-        summarize()
+        try:
+            summarize(title_and_url_dict.get(news_summary.get()))
+        except newspaper.article.ArticleException:
+            print("Enter An Article First")
 
 
+urls, results = obj.search_articles()
+news_paper_title = [key['title'] for key in results]
+
+# GUI functionality begins here, This is what displays everything
 root = Tk()
 
-root.title("Stock Market version 10")
+root.title("Stock Market version 20")
 
 label_ticker = Label(root, text="Ticker Symbol", font='Roboto')
 label_ticker.pack()
@@ -67,11 +72,12 @@ summary.pack()
 
 options = ["Market Stock", "Pie Chart", "Bar Graph", "Summary"]
 txtFile = ['PositiveText.txt', 'NegativeText.txt', 'NeutralText.txt']
+title_and_url_dict = dict(zip(news_paper_title, urls))
 
 clicked = StringVar()
 clicked.set("Options")
 
-label_options = Label(root, text="Options", font='Roboto')
+label_options = Label(root, text="Menu", font=('Roboto', 10))
 label_options.pack()
 
 myCombo = ttk.Combobox(root, value=options)
@@ -79,12 +85,20 @@ myCombo.current(0)
 myCombo.bind("<<ComboboxSelected>>", selected)
 myCombo.pack()
 
-label_info = Label(root, text="Articles", font='Roboto')
+label_info = Label(root, text="Sentiment Files", font=('Roboto', 10))
 label_info.pack()
 
 textFile = ttk.Combobox(root, value=txtFile)
 textFile.current(0)
 textFile.bind("<<TextSelected>>", ob.enter_file)
 textFile.pack()
+
+label_news = Label(root, text="Select Articles", font=('Roboto', 10))
+label_news.pack()
+
+news_summary = ttk.Combobox(root, value=news_paper_title)
+news_summary.current(0)
+news_summary.bind("<<TextSelected>>", selected)
+news_summary.pack()
 
 root.mainloop()
