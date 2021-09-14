@@ -6,6 +6,22 @@ import multiprocessing
 import numpy as np
 import time
 import article_analysis
+import datetime as dt
+from tkinter import *
+from tkcalendar import DateEntry
+import matplotlib.pyplot as plt
+import string
+from nltk.sentiment import SentimentIntensityAnalyzer
+import nltk
+import threading
+
+from nltk.tokenize.treebank import TreebankWordDetokenizer
+# nltk.download('vader_lexicon')
+
+# download the stopwords
+from nltk.corpus import stopwords
+# nltk.download('stopwords')
+from nltk.tokenize import word_tokenize
 
 # nltk.download('punkt')
 oc = article_analysis.GUIFunctions()
@@ -44,8 +60,8 @@ class ArticleSentiment:
         google_news.set_lang('en')
         google_news.set_time_range(self.start_date, self.end_date)
         google_news.set_encode('utf-8')
-        google_news.get_news('UCTT')
-        google_news.search('UCTT')
+        google_news.get_news('UCTT ham-let ltd')
+        google_news.search('UCTT ham-let ltd')
         self.links = google_news.get_links()
         protocol = 'https://'  # appends the protocol if the url if the url is missing it.
         self.url = np.array([protocol + domain if protocol not in domain else domain for domain in self.links])
@@ -59,7 +75,21 @@ class ArticleSentiment:
         article.download()
         try:
             article.parse()
+            text = TextBlob(article.text)
+            # added this just to get the entire text from all the articles that  we have scraped
+            #with open('EntireText.txt', 'a') as e:
+            #    try:
+            #        e.write("%s\n" % text)
+            #   except:
+            #        pass
+
             article.nlp()
+            # added this to get the summary of all the articles
+            #with open('SummaryText.txt', 'a') as s:
+            #   try:
+            #        s.write("%s\n" % text)
+            #    except:
+            #        pass
         except:
             pass
         return article
@@ -76,6 +106,7 @@ class ArticleSentiment:
     # It calls ArticleSentiment.parsed_articles() and then ArticleSentiment.analyze_sentence()
     # The main purpose of this function is to parse and analyze the scraped articles form the internet
     # Once the articles ae parsed its then append into its sentiment list in the second for loop.
+    # loop here contains the links to all the articles
     def lexical_article_analyze(self, loop):
         for articles in loop:
             parsed_article = self.parse_articles(articles)
@@ -85,16 +116,56 @@ class ArticleSentiment:
             self.sum_total_polarity += analysis.polarity
             self.summary.append(parsed_article.summary)
 
+
+            # For better sentimental analysis result, we will preprocess data,
+            # and use SentimentIntensityAnalyzer from nltk
+            # lower case, remove punctuations and stop words
             for sentence in analysis.sentences:
-                if sentence.polarity > 0:
-                    self.positive_counter += 1
-                    self.positive_list.append(sentence)
-                elif sentence.polarity < 0:
-                    self.negative_counter += 1
-                    self.negative_list.append(sentence)
-                else:
-                    self.neutral_counter += 1
-                    self.neutral_list.append(sentence)
+                analysis = str(sentence)
+                # pre processing data nlp
+                # lower case
+                analysis = analysis.lower()
+
+                try:
+                    # remove punctuations
+                    analysis = analysis.translate(str.maketrans('', '', string.punctuation))
+                    analysis = str(analysis)
+
+                    # tokenize the sentence
+                    text_tokens = word_tokenize(analysis)
+
+
+                    # remove those stop words from the list that might change the meaning of the sentence
+                    # Example : John doesn't like to swim will not be converted to John like to swim
+                    to_remove = ['no','not','don\'t','didn\'t','did\'t'
+                                 ,'hasn\'t','hadn\'t','hasn\'t','wasn\'t',
+                                 'couldn\'t','haven\'t','doesn\'t',
+                                 'won\'t','wouldn\'t','weren\'t']
+                    stopwords = set(nltk.corpus.stopwords.words('english')).difference(to_remove)
+                    # remove stop words from the text
+                    tokens_without_sw = [word for word in text_tokens if not word in stopwords]
+                     #detokenize conver the tokenize version of text into normal sentence without stopwords
+                    text = TreebankWordDetokenizer().detokenize(tokens_without_sw)
+
+                    # get the sentimental score
+                    sia = SentimentIntensityAnalyzer()
+                    score = sia.polarity_scores(text)
+
+                    # positive
+                    if score['compound'] > 0:
+                        self.positive_counter += 1
+                        self.positive_list.append(text)
+                    # negative
+                    elif score['compound'] < 0:
+                        self.negative_counter += 1
+                        self.negative_list.append(text)
+                    # neutral
+                    else:
+                        self.neutral_counter += 1
+                        self.neutral_list.append(text)
+                except:
+                    pass
+
 
     # show_stats(): takes zero arguments
     # This function displays information about the scraped articles after they have been parsed and passed through the
@@ -136,35 +207,123 @@ class ArticleSentiment:
 
 # if trying to run this with multiprocessing you must use the following command for it to run
 # if __name__ == '__main__':
+
+# added the feature where instead of hardcoding the dates the user can select the dates and
+# the articles will be scraped based on that dates
 if __name__ == '__main__':
-    print("# of processors", multiprocessing.cpu_count())
-    obj = ArticleSentiment('08/01/2010', '08/16/2021')
-    obj.search_article_timeframe()
+    def call ():
+        from_date = cal_from.get_date()
+        to_date = cal_to.get_date()
+        print("# of processors", multiprocessing.cpu_count())
+        obj = ArticleSentiment(from_date, to_date)
+        obj.search_article_timeframe()
+        begin = time.time()
 
-    begin = time.time()
-    p1 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.url))
-    p1.start()
-    p1.join()
-    # obj.lexical_article_analyze(obj.url)
 
+        # Get the total number of articles and divide by number of threads
+        length = (len(obj.url)) / 8
+        length = int(length)
+
+        tlist1 = list()
+        tlist2 = list()
+        tlist3 = list()
+        tlist4 = list()
+        tlist5 = list()
+        tlist6 = list()
+        tlist7 = list()
+        tlist8 = list()
+
+
+        # Store all the urls in different list so that later can be passed to different threads
+        count = 0
+        for url in obj.url:
+            if count == length:
+                break
+            else:
+                tlist1.append(obj.url[count])
+                tlist2.append(obj.url[count + length])
+                tlist3.append(obj.url[count + (2 * length)])
+                tlist4.append(obj.url[count + (3 * length)])
+                tlist5.append(obj.url[count + (4 * length)])
+                tlist6.append(obj.url[count + (5 * length)])
+                tlist7.append(obj.url[count + (6 * length)])
+                tlist8.append(obj.url[count + (7 * length)])
+                count += 1
+
+        # Creatin multiple threads and passing in different urls
+        t1 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist1,))
+        t2 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist2,))
+        t3 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist3,))
+        t4 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist4,))
+        t5 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist5,))
+        t6 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist6,))
+        t7 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist7,))
+        t8 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist8,))
+
+        # Start all threads
+        t1.start()
+        t2.start()
+        t3.start()
+        t4.start()
+        t5.start()
+        t6.start()
+        t7.start()
+        t8.start()
+
+        # Wait for all threads to finish
+        t1.join()
+        t2.join()
+        t3.join()
+        t4.join()
+        t5.join()
+        t6.join()
+        t7.join()
+        t8.join()
     # stats = DisplayStat()
-    obj.show_stats()
-    obj.show_pie()
+        obj.show_stats()
+        obj.show_pie()
 
-    end = time.time()
-    print("Total Runtime of the Program is: {:.2f} seconds".format(end - begin))
+        end = time.time()
+        print("Total Runtime of the Program is: {:.2f} seconds".format(end - begin))
 
-    with open('NegativeText.txt', 'w') as f:
-        for item in obj.negative_list:
-            f.write("%s\n" % item)
+        with open('PositiveText.txt', 'w') as p:
+            for item in obj.positive_list:
+                try:
+                    p.write("%s\n" % item)
+                except:
+                    pass
 
-    with open('PositiveText.txt', 'w') as p:
-        for item in obj.positive_list:
-            p.write("%s\n" % item)
+        with open('NegativeText.txt', 'w') as f:
+            for item in obj.negative_list:
+                try:
+                    f.write("%s\n" % item)
+                except:
+                     pass
+        with open('NeutralText.txt', 'w') as n:
+            for item in obj.neutral_list:
+                try:
+                    n.write("%s\n" % item)
+                except:
+                    pass
 
-    # with open('NeutralText.txt', 'w') as n:
-    #     for item in obj.neutral_list:
-    #         n.write("%s\n" % item)
+        print(len(obj.neutral_list))
+        obj.store_sentiment_data()
 
-    print(len(obj.neutral_list))
-    obj.store_sentiment_data()
+    # Instead of hardcoding the dates we will provide the option to the user
+    # to select dates and the articles will be scraped based on
+    # these dates.
+    root = Tk()
+    root.title("Reviews")
+    label_from = Label(root, text='From:', font='Roboto')
+    label_from.pack()
+    cal_from = DateEntry(root, width=50, year=2020, month=1, day=1)
+    cal_from.pack(padx=10, pady=10)
+
+    label_to = Label(root, text="To:", font='Roboto')
+    label_to.pack()
+    cal_to = DateEntry(root, width=50)
+    cal_to.pack(padx=10, pady=10)
+
+    btn_call = Button(root, text="Submit", font='Roboto', command=call)
+    btn_call.pack()
+    root.mainloop()
