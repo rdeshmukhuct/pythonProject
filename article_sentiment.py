@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import string
 from nltk.sentiment import SentimentIntensityAnalyzer
 import nltk
+import threading
 
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 # nltk.download('vader_lexicon')
@@ -129,13 +130,21 @@ class ArticleSentiment:
                     # remove punctuations
                     analysis = analysis.translate(str.maketrans('', '', string.punctuation))
                     analysis = str(analysis)
+
                     # tokenize the sentence
                     text_tokens = word_tokenize(analysis)
 
-                    stopwords = set(nltk.corpus.stopwords.words('english'))
+
+                    # remove those stop words from the list that might change the meaning of the sentence
+                    # Example : John doesn't like to swim will not be converted to John like to swim
+                    to_remove = ['no','not','don\'t','didn\'t','did\'t'
+                                 ,'hasn\'t','hadn\'t','hasn\'t','wasn\'t',
+                                 'couldn\'t','haven\'t','doesn\'t',
+                                 'won\'t','wouldn\'t','weren\'t']
+                    stopwords = set(nltk.corpus.stopwords.words('english')).difference(to_remove)
                     # remove stop words from the text
                     tokens_without_sw = [word for word in text_tokens if not word in stopwords]
-                    # detokenize conver the tokenize version of text into normal sentence without stopwords
+                     #detokenize conver the tokenize version of text into normal sentence without stopwords
                     text = TreebankWordDetokenizer().detokenize(tokens_without_sw)
 
                     # get the sentimental score
@@ -155,7 +164,6 @@ class ArticleSentiment:
                         self.neutral_counter += 1
                         self.neutral_list.append(text)
                 except:
-                    print("some error")
                     pass
 
 
@@ -209,13 +217,68 @@ if __name__ == '__main__':
         print("# of processors", multiprocessing.cpu_count())
         obj = ArticleSentiment(from_date, to_date)
         obj.search_article_timeframe()
-
         begin = time.time()
-        p1 = multiprocessing.Process(target=obj.lexical_article_analyze(obj.url))
-        p1.start()
-        p1.join()
-    # obj.lexical_article_analyze(obj.url)
 
+
+        # Get the total number of articles and divide by number of threads
+        length = (len(obj.url)) / 8
+        length = int(length)
+
+        tlist1 = list()
+        tlist2 = list()
+        tlist3 = list()
+        tlist4 = list()
+        tlist5 = list()
+        tlist6 = list()
+        tlist7 = list()
+        tlist8 = list()
+
+
+        # Store all the urls in different list so that later can be passed to different threads
+        count = 0
+        for url in obj.url:
+            if count == length:
+                break
+            else:
+                tlist1.append(obj.url[count])
+                tlist2.append(obj.url[count + length])
+                tlist3.append(obj.url[count + (2 * length)])
+                tlist4.append(obj.url[count + (3 * length)])
+                tlist5.append(obj.url[count + (4 * length)])
+                tlist6.append(obj.url[count + (5 * length)])
+                tlist7.append(obj.url[count + (6 * length)])
+                tlist8.append(obj.url[count + (7 * length)])
+                count += 1
+
+        # Creatin multiple threads and passing in different urls
+        t1 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist1,))
+        t2 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist2,))
+        t3 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist3,))
+        t4 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist4,))
+        t5 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist5,))
+        t6 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist6,))
+        t7 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist7,))
+        t8 = threading.Thread(target=obj.lexical_article_analyze, args=(tlist8,))
+
+        # Start all threads
+        t1.start()
+        t2.start()
+        t3.start()
+        t4.start()
+        t5.start()
+        t6.start()
+        t7.start()
+        t8.start()
+
+        # Wait for all threads to finish
+        t1.join()
+        t2.join()
+        t3.join()
+        t4.join()
+        t5.join()
+        t6.join()
+        t7.join()
+        t8.join()
     # stats = DisplayStat()
         obj.show_stats()
         obj.show_pie()
