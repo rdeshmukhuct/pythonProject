@@ -59,7 +59,7 @@ news_paper_title = [key['title'] for key in results]
 # GUI functionality begins here, This is what displays everything
 root = Tk()
 
-root.title("Ham-Let")
+root.title("Title")
 
 label_ticker = Label(root, text="Ticker Symbol", font='Roboto')
 label_ticker.pack()
@@ -72,7 +72,7 @@ summary.pack()
 
 options = ["Market Stock", "Data Visualization", "Bar Graph", "Summary"]
 txtFile = ['PositiveText.txt', 'NegativeText.txt', 'NeutralText.txt']
-title_and_url_dict = dict(zip(news_paper_title, urls))
+title_and_url_dict = dict(zip(news_paper_title, urls))  # Zips together news paper title as key and urls as values
 
 clicked = StringVar()
 clicked.set("Options")
