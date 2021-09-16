@@ -279,11 +279,13 @@ if __name__ == '__main__':
         t6.join()
         t7.join()
         t8.join()
+
+        end = time.time()
     # stats = DisplayStat()
         obj.show_stats()
         obj.show_pie()
 
-        end = time.time()
+        # end = time.time()
         print("Total Runtime of the Program is: {:.2f} seconds".format(end - begin))
 
         with open('PositiveText.txt', 'w') as p:
