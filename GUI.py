@@ -38,7 +38,7 @@ def summarize(url):
 # It calls article_analysis.py & word_frequency.py
 def selected(event):
     print(type(event))
-    if myCombo.get() == "Pie Chart":
+    if myCombo.get() == "Data Visualization":
         values = obj.read_lines()
         obj.pie_chart(values)
     elif myCombo.get() == "Bar Graph":
@@ -59,18 +59,18 @@ news_paper_title = [key['title'] for key in results]
 # GUI functionality begins here, This is what displays everything
 root = Tk()
 
-root.title("Stock Market version 20")
+root.title("Ham-Let")
 
 label_ticker = Label(root, text="Ticker Symbol", font='Roboto')
 label_ticker.pack()
-text_ticker = Label(root, text="Ultra Clean Technology(UCTT)", font='Roboto')
+text_ticker = Label(root, text="Ham-let (israel-canada) ltd", font='Roboto')
 text_ticker.pack()
 
 summary = Text(root, height=20, width=100)
 summary.config(state='disabled', bg='#dddddd')
 summary.pack()
 
-options = ["Market Stock", "Pie Chart", "Bar Graph", "Summary"]
+options = ["Market Stock", "Data Visualization", "Bar Graph", "Summary"]
 txtFile = ['PositiveText.txt', 'NegativeText.txt', 'NeutralText.txt']
 title_and_url_dict = dict(zip(news_paper_title, urls))
 
