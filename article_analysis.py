@@ -6,18 +6,18 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import pandas_datareader as web
 import numpy as np
-import main
+import word_frequency
 
-ob = main.MostCommonWords()
+ob = word_frequency.MostCommonWords()
 conn = sqlite3.connect('test.db')
 c = conn.cursor()
 
 
 # The main purpose of GUIFnctions() is to assist GUI.py when calling functions and to reduce class size
-# It calls upon main.py
+# It calls upon word_frequency.py
 
 class GUIFunctions:
-    ob = main.MostCommonWords()
+    ob = word_frequency.MostCommonWords()
 
     # search_articles(): takes zero arguments and return a list of parsed urls called urls as well as list[dict{}].
     # d1 and d2 are dates that the user can change to get different articles from different dates.
