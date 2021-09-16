@@ -4,11 +4,11 @@ from tkinter import ttk
 import newspaper
 from newspaper import Article
 from textblob import TextBlob
-import main
+import word_frequency
 import article_analysis
 import sqlite3 as lite
 
-ob = main.MostCommonWords()
+ob = word_frequency.MostCommonWords()
 obj = article_analysis.GUIFunctions()
 
 
@@ -35,7 +35,7 @@ def summarize(url):
 # When the drop down-menu is display this function executes and depending on what the user
 # enter will trigger an action to Display. For example a pie chart or a bar Graph of the top ten words
 # in a article that has been pre-parsed. It calls two separate classes,
-# It calls article_analysis.py & main.py
+# It calls article_analysis.py & word_frequency.py
 def selected(event):
     print(type(event))
     if myCombo.get() == "Data Visualization":
@@ -59,7 +59,7 @@ news_paper_title = [key['title'] for key in results]
 # GUI functionality begins here, This is what displays everything
 root = Tk()
 
-root.title("Ham-Let")
+root.title("Title")
 
 label_ticker = Label(root, text="Ticker Symbol", font='Roboto')
 label_ticker.pack()
@@ -72,7 +72,7 @@ summary.pack()
 
 options = ["Market Stock", "Data Visualization", "Bar Graph", "Summary"]
 txtFile = ['PositiveText.txt', 'NegativeText.txt', 'NeutralText.txt']
-title_and_url_dict = dict(zip(news_paper_title, urls))
+title_and_url_dict = dict(zip(news_paper_title, urls))  # Zips together news paper title as key and urls as values
 
 clicked = StringVar()
 clicked.set("Options")

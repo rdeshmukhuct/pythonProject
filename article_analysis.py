@@ -6,19 +6,19 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import pandas_datareader as web
 import numpy as np
-import main
+import word_frequency
 
-ob = main.MostCommonWords()
+ob = word_frequency.MostCommonWords()
 conn = sqlite3.connect('test.db')
 c = conn.cursor()
 
 
 # The main purpose of GUIFnctions() is to assist GUI.py when calling functions and to reduce class size
-# It calls upon main.py
+# It calls upon word_frequency.py
 
 class GUIFunctions:
-    print("You are in the article_analysis.py - GUIFunctions")
-    ob = main.MostCommonWords()
+    ob = word_frequency.MostCommonWords()
+
 
     # search_articles(): takes zero arguments and return a list of parsed urls called urls as well as list[dict{}].
     # d1 and d2 are dates that the user can change to get different articles from different dates.
@@ -32,8 +32,8 @@ class GUIFunctions:
         google_news = GoogleNews()
         google_news.set_time_range(start_date, end_date)  # You can hard code the Dates here or at the top
         google_news.set_encode('utf-8')
-        google_news.get_news('UCTT ham-let ltd ')  # This Can be changed to any Company Ticker
-        google_news.search('UCTT ham-let ltd')  # Change this to the Company Ticker above
+        google_news.get_news('UCTT')  # This Can be changed to any Company Ticker
+        google_news.search('UCTT')  # Change this to the Company Ticker above
         links = google_news.get_links()
         result = google_news.result()
         google_news.clear()
