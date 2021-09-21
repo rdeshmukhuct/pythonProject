@@ -3,6 +3,7 @@ import unittest
 from GoogleNews import GoogleNews
 import article_sentiment
 from unittest.mock import MagicMock, Mock
+import pytest
 
 mock = Mock()
 

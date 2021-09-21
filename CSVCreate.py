@@ -15,6 +15,7 @@ import numpy as np
 
 
 def summarize():
+    ticker = text_ticker.get()
     from_date = cal_from.get_date()
     to_date = cal_to.get_date()
 
@@ -28,8 +29,9 @@ def summarize():
     google_news.set_lang('en')
     google_news.set_time_range(start=d1, end=d2)
     google_news.set_encode('utf-8')
-    google_news.get_news('UCTT')
-    google_news.search('UCTT')
+    ticker = ticker + "stock"    # Get news of the ticker stock and then summarize it
+    google_news.get_news(ticker)
+    google_news.search(ticker)
     results = google_news.result(sort=True)
     links = google_news.get_links()
     protocol = 'https://'  # appends the protocol if the url if the url is missing it.
@@ -104,7 +106,7 @@ def visualize():
     ax.figure.canvas.set_window_title("Alpha Version v0.1 Alpha")
     ax.set_facecolor('black')
     ax.figure.set_facecolor('#121212')
-    ax.tick_params(axis='x', colors='white')
+    ax.tick_params(axis='x', rotation=30,  colors='white')
     ax.tick_params(axis='y', colors='white')
     ax.xaxis_date()
 
