@@ -1,32 +1,44 @@
 import sqlite3 as lite
 import sys
 import article_analysis
+import article_sentiment
 
 values = article_analysis.GUIFunctions()
 urls, result = values.search_articles()
-v = [item for item in result]
-print(v)
+
+counter = 0
+# url and links are same the only difference is https:/
+# so we just update the link with the url
+for item in result:
+    item.update(link=urls[counter])
+    counter += 1
+
+# v = [item for item in result]
+# print(v)
 # i = 0
 # for it in result:
 #     it.update(url=urls[i])
 #     i+=1
 #     print(it)
 
-
-
-conn = lite.connect('test.db')
+# had to change the name of the db as for some reason test.db giving wierd errors
+conn = lite.connect('UCTT.db')
 c = conn.cursor()
+
+# We don't want our table to be added with the same data always so everytime we drop the table and
+# then create a new one
+c.execute("""DROP TABLE IF EXISTS test""")
 #
-# c.execute("""CREATE TABLE test (
-#             title text,
-#             desc text,
-#             date text,
-#             datetime text,
-#             link text,
-#             img text,
-#             media text,
-#             site text
-#     )""")
+c.execute("""CREATE TABLE test (
+             title text,
+             desc text,
+             date text,
+             datetime text,
+             link text,
+             img text,
+             media text,
+             site text
+  )""")
 
 # user1 = {'title': 'Why Ultra Clean Holdings Is The Semiconductor Stock To Own',
 #          'desc': 'bookmark_border',
@@ -39,21 +51,24 @@ c = conn.cursor()
 #          'url': }
 #
 #
-# for item in result:
-#     try:
-#         c.execute("INSERT INTO test VALUES (:title, :desc, :date, :datetime, :link, :img, :media, :site, :url)", item)
-#     except:
-#         pass
+for item in result:
+    try:
+        c.execute("INSERT INTO test VALUES (:title, :desc, :date, :datetime, :link, :img, :media, :site)", item)
+    except:
+        pass
 # #
 # #
 # #
-# c.execute("SELECT * FROM test ")
+c.execute("SELECT * FROM test ")
+
 #
 #
-# rows = c.fetchall()
-# for row in rows:
-#     print(row)
-#
+rows = c.fetchall()
+for row in rows:
+    print(row)
+print(len(rows))
+
+
 # print(c.fetchone())
 
 conn.commit()

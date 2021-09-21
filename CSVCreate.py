@@ -106,7 +106,7 @@ def visualize():
     ax.figure.canvas.set_window_title("Alpha Version v0.1 Alpha")
     ax.set_facecolor('black')
     ax.figure.set_facecolor('#121212')
-    ax.tick_params(axis='x', colors='white')
+    ax.tick_params(axis='x', rotation=30,  colors='white')
     ax.tick_params(axis='y', colors='white')
     ax.xaxis_date()
 

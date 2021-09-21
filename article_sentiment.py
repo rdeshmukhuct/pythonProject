@@ -22,9 +22,11 @@ from nltk.tokenize.treebank import TreebankWordDetokenizer
 from nltk.corpus import stopwords
 # nltk.download('stopwords')
 from nltk.tokenize import word_tokenize
+import SQLiteDB
 
 # nltk.download('punkt')
 oc = article_analysis.GUIFunctions()
+db = SQLiteDB.SQLDb()
 
 
 # ReadMe -> This class analyzes the polarity and sentiment of each article scarped form the internet
@@ -60,12 +62,21 @@ class ArticleSentiment:
         google_news.set_lang('en')
         google_news.set_time_range(self.start_date, self.end_date)
         google_news.set_encode('utf-8')
-        google_news.get_news('UCTT ham-let ltd')
-        google_news.search('UCTT ham-let ltd')
+        #google_news.get_news('UCTT ham-let ltd')
+        #google_news.search('UCTT ham-let ltd')
+        google_news.get_news('UCTT')
+        google_news.search('UCTT')
         self.links = google_news.get_links()
+        result = google_news.result()
         protocol = 'https://'  # appends the protocol if the url if the url is missing it.
         self.url = np.array([protocol + domain if protocol not in domain else domain for domain in self.links])
+        db.insert_data_articles(result,self.url)
+        #db.get_data()
 
+
+
+
+    # SQL call here
     # parse_articles() takes one argument which is the text file from the list and returns the processed article
     # This is the most costly and time consuming function in the class, because of parse() and nlp() which
     # take the most amount of time to compute. time to compute is usually greater than 70 seconds
@@ -200,6 +211,8 @@ class ArticleSentiment:
     # store_sentiment_data() saves then length of each sentiment to a text file so GUI.py can use it for UX
     def store_sentiment_data(self):
         data = [len(self.positive_list), len(self.negative_list), len(self.neutral_list)]
+
+        # sqlite ???? insert_occurances ???
         with open('data.txt', 'w') as f:
             for item in data:
                 f.write("%d\n" % item)
@@ -288,27 +301,36 @@ if __name__ == '__main__':
         # end = time.time()
         print("Total Runtime of the Program is: {:.2f} seconds".format(end - begin))
 
-        with open('PositiveText.txt', 'w') as p:
-            for item in obj.positive_list:
-                try:
-                    p.write("%s\n" % item)
-                except:
-                    pass
 
-        with open('NegativeText.txt', 'w') as f:
-            for item in obj.negative_list:
-                try:
-                    f.write("%s\n" % item)
-                except:
-                     pass
-        with open('NeutralText.txt', 'w') as n:
-            for item in obj.neutral_list:
-                try:
-                    n.write("%s\n" % item)
-                except:
-                    pass
+        # here we can call the sqlite method to update the positive, negative and neutral tables.
+        #  sqlite ???? insert data(obj.positive_list)
 
-        print(len(obj.neutral_list))
+        db.insert_data_neutral(obj.neutral_list)
+        db.insert_data_negative(obj.negative_list)
+        db.insert_data_positive(obj.positive_list)
+        db.close()
+
+        #with open('PositiveText.txt', 'w') as p:
+        #    for item in obj.positive_list:
+        #        try:
+        #            p.write("%s\n" % item)
+        #        except:
+        #            pass
+
+        #with open('NegativeText.txt', 'w') as f:
+        #    for item in obj.negative_list:
+        #        try:
+        #            f.write("%s\n" % item)
+        #        except:
+        #             pass
+        #with open('NeutralText.txt', 'w') as n:
+        #    for item in obj.neutral_list:
+        #        try:
+        #            n.write("%s\n" % item)
+        #        except:
+        #            pass
+
+        # print(len(obj.neutral_list))
         obj.store_sentiment_data()
 
     # Instead of hardcoding the dates we will provide the option to the user

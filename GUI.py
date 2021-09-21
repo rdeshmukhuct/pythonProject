@@ -12,6 +12,8 @@ ob = word_frequency.MostCommonWords()
 obj = article_analysis.GUIFunctions()
 
 
+
+
 # summarize(): takes one arguments which is a url from a selected title and returns nothing
 # it displays the summarize article from a list of scraped article from google.
 # it calls the class article_analysis.py
@@ -55,6 +57,31 @@ def selected(event):
 
 urls, results = obj.search_articles()
 news_paper_title = [key['title'] for key in results]
+# print(news_paper_title)
+
+
+
+# conn = lite.connect('UCTT.db')
+# c = conn.cursor()
+
+# Create two lists one for title and one for url
+#news_paper_title = list()
+#urls = list()
+# Get all the titles and save it in our news_paper_list
+# Get all the links/urls and save it in our urls list
+#for row in (c.execute("SELECT title, link FROM articles ")):
+   # row = list(row)
+   # news_paper_title.append(row[0])
+    #urls.append(row[1])
+   # print("Title : " , row[0])
+    #print( "URL : ", row[1])
+
+
+
+
+
+
+
 
 # GUI functionality begins here, This is what displays everything
 root = Tk()

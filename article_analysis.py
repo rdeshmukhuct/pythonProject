@@ -13,6 +13,7 @@ conn = sqlite3.connect('test.db')
 c = conn.cursor()
 
 
+
 # The main purpose of GUIFnctions() is to assist GUI.py when calling functions and to reduce class size
 # It calls upon word_frequency.py
 
