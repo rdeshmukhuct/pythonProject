@@ -70,6 +70,7 @@ class ArticleSentiment:
         result = google_news.result()
         protocol = 'https://'  # appends the protocol if the url if the url is missing it.
         self.url = np.array([protocol + domain if protocol not in domain else domain for domain in self.links])
+        # Call the method from the SQLitedb and insert all the details into our article table
         db.insert_data_articles(result,self.url)
         #db.get_data()
 
@@ -101,7 +102,9 @@ class ArticleSentiment:
             #        s.write("%s\n" % text)
             #    except:
             #        pass
-        except:
+        except ArticleException as e:
+            # print(e)
+            print("Bad Url")
             pass
         return article
 
@@ -174,8 +177,10 @@ class ArticleSentiment:
                     else:
                         self.neutral_counter += 1
                         self.neutral_list.append(text)
-                except:
+                except Exception as e:
+                    print(e)
                     pass
+
 
 
     # show_stats(): takes zero arguments
@@ -303,11 +308,29 @@ if __name__ == '__main__':
 
 
         # here we can call the sqlite method to update the positive, negative and neutral tables.
-        #  sqlite ???? insert data(obj.positive_list)
+        try:
+            db.insert_data_neutral(obj.neutral_list)
+        except Exception as e:
+            print(e)
+            pass
 
-        db.insert_data_neutral(obj.neutral_list)
-        db.insert_data_negative(obj.negative_list)
-        db.insert_data_positive(obj.positive_list)
+        try:
+            db.insert_data_negative(obj.negative_list)
+        except Exception as e:
+            print(e)
+            pass
+
+
+        try:
+            db.insert_data_positive(obj.positive_list)
+        except Exception as e:
+            print(e)
+            pass
+
+
+
+
+
         db.close()
 
         #with open('PositiveText.txt', 'w') as p:
