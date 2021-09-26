@@ -13,13 +13,11 @@ conn = sqlite3.connect('test.db')
 c = conn.cursor()
 
 
-
 # The main purpose of GUIFnctions() is to assist GUI.py when calling functions and to reduce class size
 # It calls upon word_frequency.py
 
 class GUIFunctions:
     ob = word_frequency.MostCommonWords()
-
 
     # search_articles(): takes zero arguments and return a list of parsed urls called urls as well as list[dict{}].
     # d1 and d2 are dates that the user can change to get different articles from different dates.
@@ -75,7 +73,8 @@ class GUIFunctions:
     # takes data from GUIFunction.read_lines() which returns pre-processed data that gives the length of
     # negative, positive, and neutral sentiment articles that were pre computed in article_sentiment().
     # It displays a pie chart
-    def pie_chart(self, datalist):
+    @classmethod
+    def pie_chart(cls, datalist):
         fig, (ax, ax1) = plt.subplots(1, 2, figsize=(10, 10))
 
         # bar graph to visualise data
@@ -94,7 +93,6 @@ class GUIFunctions:
         ax1.set_title("Pie chart for Sentiment Article Analysis ")
 
         plt.show()
-
 
         # type_of_sentiment = ['Positive', 'Negative', 'Neutral']
         # data = datalist

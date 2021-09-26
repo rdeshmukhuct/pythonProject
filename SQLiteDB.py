@@ -1,20 +1,21 @@
 import sqlite3 as lite
 import sys
 
-
 # values = article_analysis.GUIFunctions()
 # urls, result = values.search_articles()
 
 # Create the initial connection
+import SQLiteDB
+
 print("The connection is made")
 conn = lite.connect('UCTT.db')
 c = conn.cursor()
 
 
-
 class SQLDb:
 
-    def create_table_articles(self):
+    @classmethod
+    def create_table_articles(cls):
         print("table created")
         c.execute("""DROP TABLE IF EXISTS articles""")
         print("Table dropped")
@@ -31,8 +32,6 @@ class SQLDb:
           )""")
         print("Table created")
 
-
-
     def insert_data_articles(self, result, url):
         self.create_table_articles()
         print("data inserted")
@@ -45,11 +44,13 @@ class SQLDb:
 
         for item in result:
             try:
-                c.execute("INSERT INTO articles VALUES (:title, :desc, :date, :datetime, :link, :img, :media, :site)", item)
-            except:
-                pass
+                c.execute("INSERT INTO articles VALUES (:title, :desc, :date, :datetime, :link, :img, :media, :site)",
+                          item)
+            except Exception as e:
+                print("Exception: ", e)
 
-    def create_table_positive_texts(self):
+    @classmethod
+    def create_table_positive_texts(cls):
         print("table created positive")
         c.execute("""DROP TABLE IF EXISTS positive_texts""")
         print("Table dropped")
@@ -59,20 +60,19 @@ class SQLDb:
           )""")
         print("Table created")
 
-    def insert_data_positive(self,positive_list):
+    def insert_data_positive(self, positive_list):
         self.create_table_positive_texts()
         print("data inserted")
-
 
         for item in positive_list:
             try:
                 print("+ve")
                 c.execute("INSERT INTO positive_texts(positive) VALUES(?)", (item,))
-            except:
-                print("failed +ve")
-                pass
+            except Exception as e:
+                print("failed +ve: ", e)
 
-    def create_table_negative_texts(self):
+    @classmethod
+    def create_table_negative_texts(cls):
         print("table created negative")
         c.execute("""DROP TABLE IF EXISTS negative_texts""")
         print("Table dropped")
@@ -91,11 +91,11 @@ class SQLDb:
             try:
                 print("inert negative")
                 c.execute("INSERT INTO negative_texts(negative) VALUES(?)", (item,))
-            except:
-                print("failed")
-                pass
+            except Exception as e:
+                print("failed: ", e)
 
-    def create_table_neutral_texts(self):
+    @classmethod
+    def create_table_neutral_texts(cls):
         print("table created neutral")
         c.execute("""DROP TABLE IF EXISTS neutral_texts""")
         print("Table dropped")
@@ -113,26 +113,27 @@ class SQLDb:
             try:
                 print("Neutral inserted")
                 c.execute("INSERT INTO neutral_texts(neutral) VALUES(?)", (item,))
-            except:
-                print("failed neutral")
-                pass
+            except Exception as e:
+                print("failed neutral: ", e)
 
+    @classmethod
+    def get_data(cls):
 
+        listTitle = []
 
-
-    def get_data(self):
         print("data retrieved")
-        c.execute("SELECT * FROM positive_texts ")
+        c.execute("SELECT * FROM articles  ")
         rows = c.fetchall()
 
         for row in rows:
-            print(row)
-        print(len(rows))    # this will give number of occurances
+            listTitle.append(row[0])  # GET ONLY THE TITLE OF THE ARTICLE FROM THE TABLE
+        # print(len(rows))  # this will give number of occurrences
+        return listTitle
 
-    def close(self):
+    @classmethod
+    def close(cls):
         conn.commit()
         conn.close()
 
-
-
-
+# ob = SQLiteDB.SQLDb
+# print(ob.get_data())

@@ -16,15 +16,15 @@ import nltk
 import threading
 
 from nltk.tokenize.treebank import TreebankWordDetokenizer
-# nltk.download('vader_lexicon')
+nltk.download('vader_lexicon')
 
 # download the stopwords
 from nltk.corpus import stopwords
-# nltk.download('stopwords')
+nltk.download('stopwords')
 from nltk.tokenize import word_tokenize
 import SQLiteDB
 
-# nltk.download('punkt')
+nltk.download('punkt')
 oc = article_analysis.GUIFunctions()
 db = SQLiteDB.SQLDb()
 
@@ -62,19 +62,16 @@ class ArticleSentiment:
         google_news.set_lang('en')
         google_news.set_time_range(self.start_date, self.end_date)
         google_news.set_encode('utf-8')
-        #google_news.get_news('UCTT ham-let ltd')
-        #google_news.search('UCTT ham-let ltd')
+        # google_news.get_news('UCTT ham-let ltd')
+        # google_news.search('UCTT ham-let ltd')
         google_news.get_news('UCTT')
         google_news.search('UCTT')
         self.links = google_news.get_links()
         result = google_news.result()
         protocol = 'https://'  # appends the protocol if the url if the url is missing it.
         self.url = np.array([protocol + domain if protocol not in domain else domain for domain in self.links])
-        db.insert_data_articles(result,self.url)
-        #db.get_data()
-
-
-
+        db.insert_data_articles(result, self.url)
+        # db.get_data()
 
     # SQL call here
     # parse_articles() takes one argument which is the text file from the list and returns the processed article
@@ -88,7 +85,7 @@ class ArticleSentiment:
             article.parse()
             text = TextBlob(article.text)
             # added this just to get the entire text from all the articles that  we have scraped
-            #with open('EntireText.txt', 'a') as e:
+            # with open('EntireText.txt', 'a') as e:
             #    try:
             #        e.write("%s\n" % text)
             #   except:
@@ -96,13 +93,13 @@ class ArticleSentiment:
 
             article.nlp()
             # added this to get the summary of all the articles
-            #with open('SummaryText.txt', 'a') as s:
+            # with open('SummaryText.txt', 'a') as s:
             #   try:
             #        s.write("%s\n" % text)
             #    except:
             #        pass
-        except:
-            pass
+        except Exception as e:
+            print(e)
         return article
 
     # analyze_sentence(): takes one argument index from list and returns the analysis in the index
@@ -127,7 +124,6 @@ class ArticleSentiment:
             self.sum_total_polarity += analysis.polarity
             self.summary.append(parsed_article.summary)
 
-
             # For better sentimental analysis result, we will preprocess data,
             # and use SentimentIntensityAnalyzer from nltk
             # lower case, remove punctuations and stop words
@@ -145,17 +141,16 @@ class ArticleSentiment:
                     # tokenize the sentence
                     text_tokens = word_tokenize(analysis)
 
-
                     # remove those stop words from the list that might change the meaning of the sentence
                     # Example : John doesn't like to swim will not be converted to John like to swim
-                    to_remove = ['no','not','don\'t','didn\'t','did\'t'
-                                 ,'hasn\'t','hadn\'t','hasn\'t','wasn\'t',
-                                 'couldn\'t','haven\'t','doesn\'t',
-                                 'won\'t','wouldn\'t','weren\'t']
+                    to_remove = ['no', 'not', 'don\'t', 'didn\'t', 'did\'t'
+                        , 'hasn\'t', 'hadn\'t', 'hasn\'t', 'wasn\'t',
+                                 'couldn\'t', 'haven\'t', 'doesn\'t',
+                                 'won\'t', 'wouldn\'t', 'weren\'t']
                     stopwords = set(nltk.corpus.stopwords.words('english')).difference(to_remove)
                     # remove stop words from the text
                     tokens_without_sw = [word for word in text_tokens if not word in stopwords]
-                     #detokenize conver the tokenize version of text into normal sentence without stopwords
+                    # detokenize conver the tokenize version of text into normal sentence without stopwords
                     text = TreebankWordDetokenizer().detokenize(tokens_without_sw)
 
                     # get the sentimental score
@@ -174,9 +169,8 @@ class ArticleSentiment:
                     else:
                         self.neutral_counter += 1
                         self.neutral_list.append(text)
-                except:
-                    pass
-
+                except Exception as e:
+                    print(e)
 
     # show_stats(): takes zero arguments
     # This function displays information about the scraped articles after they have been parsed and passed through the
@@ -224,14 +218,13 @@ class ArticleSentiment:
 # added the feature where instead of hardcoding the dates the user can select the dates and
 # the articles will be scraped based on that dates
 if __name__ == '__main__':
-    def call ():
+    def call():
         from_date = cal_from.get_date()
         to_date = cal_to.get_date()
         print("# of processors", multiprocessing.cpu_count())
         obj = ArticleSentiment(from_date, to_date)
         obj.search_article_timeframe()
         begin = time.time()
-
 
         # Get the total number of articles and divide by number of threads
         length = (len(obj.url)) / 8
@@ -245,7 +238,6 @@ if __name__ == '__main__':
         tlist6 = list()
         tlist7 = list()
         tlist8 = list()
-
 
         # Store all the urls in different list so that later can be passed to different threads
         count = 0
@@ -294,13 +286,12 @@ if __name__ == '__main__':
         t8.join()
 
         end = time.time()
-    # stats = DisplayStat()
+        # stats = DisplayStat()
         obj.show_stats()
         obj.show_pie()
 
         # end = time.time()
         print("Total Runtime of the Program is: {:.2f} seconds".format(end - begin))
-
 
         # here we can call the sqlite method to update the positive, negative and neutral tables.
         #  sqlite ???? insert data(obj.positive_list)
@@ -310,20 +301,20 @@ if __name__ == '__main__':
         db.insert_data_positive(obj.positive_list)
         db.close()
 
-        #with open('PositiveText.txt', 'w') as p:
+        # with open('PositiveText.txt', 'w') as p:
         #    for item in obj.positive_list:
         #        try:
         #            p.write("%s\n" % item)
         #        except:
         #            pass
 
-        #with open('NegativeText.txt', 'w') as f:
+        # with open('NegativeText.txt', 'w') as f:
         #    for item in obj.negative_list:
         #        try:
         #            f.write("%s\n" % item)
         #        except:
         #             pass
-        #with open('NeutralText.txt', 'w') as n:
+        # with open('NeutralText.txt', 'w') as n:
         #    for item in obj.neutral_list:
         #        try:
         #            n.write("%s\n" % item)
@@ -332,6 +323,7 @@ if __name__ == '__main__':
 
         # print(len(obj.neutral_list))
         obj.store_sentiment_data()
+
 
     # Instead of hardcoding the dates we will provide the option to the user
     # to select dates and the articles will be scraped based on
