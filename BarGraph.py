@@ -15,10 +15,8 @@ ob = word_frequency.MostCommonWords()
 
 
 class Ui_BarGraph(object):
-    print("okay")
 
     def setup(self, MainWindow):
-        print("Yes")
         MainWindow.setObjectName("BarGraph")
         MainWindow.resize(578, 816)
         MainWindow.setStyleSheet("background-color: rgb(255, 255, 255);")
@@ -33,7 +31,7 @@ class Ui_BarGraph(object):
         self.lablelTextMostCommon.setGeometry(QtCore.QRect(50, 200, 521, 131))
         font = QtGui.QFont()
         font.setFamily("Constantia")
-        font.setPointSize(12)
+        font.setPointSize(6)
         self.lablelTextMostCommon.setFont(font)
         self.lablelTextMostCommon.setObjectName("lablelTextMostCommon")
         self.pushButtonPositive = QtWidgets.QPushButton(self.centralwidget)
@@ -107,7 +105,7 @@ class Ui_BarGraph(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Bar Graph"))
         self.lablelTextMostCommon.setText(_translate("MainWindow",
-                                                     "<html><head/><body><p><span style=\" font-size:18pt; color:#00007f;\">Bar graph for 10 most common words</span></p></body></html>"))
+                                                     "<html><head/><body><p><span style=\" font-size:16pt; color:#00007f;\">Bar graph for 10 most common words</span></p></body></html>"))
         self.pushButtonPositive.setText(_translate("MainWindow", "Positive"))
         self.pushButtonNeutral.setText(_translate("MainWindow", "Neutral"))
         self.pushButtonNegative.setText(_translate("MainWindow", "Negative"))
@@ -135,7 +133,6 @@ class Ui_BarGraph(object):
 
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
     BarGraph = QtWidgets.QMainWindow()
     ui = Ui_BarGraph()

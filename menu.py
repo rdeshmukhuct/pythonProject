@@ -12,6 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import word_frequency
 import article_analysis
 from BarGraph import *
+from summaryArticles import *
 
 ob = word_frequency.MostCommonWords()  # MUST RENAME THESE OBJECTS TO BETTER REPRESENT THEIR FUNCTIONALITY
 obj = article_analysis.GUIFunctions()
@@ -30,7 +31,7 @@ class Ui_MainWindow(object):
         self.pushButtonStock.setGeometry(QtCore.QRect(180, 250, 241, 51))
         font = QtGui.QFont()
         font.setFamily("Constantia")
-        font.setPointSize(16)
+        font.setPointSize(14)
         self.pushButtonStock.setFont(font)
         self.pushButtonStock.setStyleSheet("border-color: rgb(85, 0, 255);\n"
 "")
@@ -60,7 +61,7 @@ class Ui_MainWindow(object):
         self.pushButtonBargraph.setGeometry(QtCore.QRect(180, 370, 241, 51))
         font = QtGui.QFont()
         font.setFamily("Constantia")
-        font.setPointSize(16)
+        font.setPointSize(14)
         self.pushButtonBargraph.setFont(font)
         self.pushButtonBargraph.setStyleSheet("border-color: rgb(85, 0, 255);\n"
 "")
@@ -69,7 +70,7 @@ class Ui_MainWindow(object):
         self.pushButtonSummary.setGeometry(QtCore.QRect(180, 430, 241, 51))
         font = QtGui.QFont()
         font.setFamily("Constantia")
-        font.setPointSize(16)
+        font.setPointSize(14)
         self.pushButtonSummary.setFont(font)
         self.pushButtonSummary.setStyleSheet("border-color: rgb(85, 0, 255);\n"
 "")
@@ -116,6 +117,7 @@ class Ui_MainWindow(object):
         self.pushButtonStock.clicked.connect(self.MarketStock)
         self.pushButtonVisualisation.clicked.connect(self.dataVisualization)
         self.pushButtonBargraph.clicked.connect(self.barGraph)
+        self.pushButtonSummary.clicked.connect(self.summary)
 
     def MarketStock(self):
             obj.visualize()
@@ -128,6 +130,12 @@ class Ui_MainWindow(object):
         self.ui = Ui_BarGraph()
         self.ui.setup(self.window)
         self.window.show()
+    def summary(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_MainWindowSummary()
+        self.ui.setupUiSummary(self.window)
+        self.window.show()
+
 
 
 if __name__ == "__main__":
