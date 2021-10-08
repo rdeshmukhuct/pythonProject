@@ -83,15 +83,15 @@ class ArticleSentiment:
         #db.create_august_description()
         #db.create_august_sentiments()
 
-        #db.create_september_description()
-        #db.create_september_sentiments()
+       #db.create_september_description()
+       #db.create_september_sentiments()
 
     # This can also be change later. article_analysis.py has the same function
     # Read the documentation in article_analysis.py for more information
     def search_article_timeframe(self):
         google_news = GoogleNews()
         google_news.set_lang('en')
-        google_news.set_time_range('01/01/2021','01/31/2021')
+        google_news.set_time_range('09/01/2021','10/08/2021')
         google_news.set_encode('utf-8')
 
        #google_news.get_news('UCTT')      # Cannot use this for time range
@@ -144,71 +144,90 @@ class ArticleSentiment:
 
                 parsed_article = self.parse_articles(articles['link'])
 
+
                 analysis = self.analyze_sentence(parsed_article)  # returns the analyzed version of the article
-                self.thing.append(parsed_article)  # addition
-                article_polarity = 0
-                article_polarity = analysis.polarity   # get the polarity score of the article
-                self.sum_total_polarity += analysis.polarity
-                self.summary.append(parsed_article.summary)
+                text = analysis.split()
 
-                #  Reset the list
-                self.positive_list = list()
-                self.negative_list =  list()
-                positive_sentences = 0
-                negative_senteces = 0
-                
-                for sentence in analysis.sentences:
-                    analysis = str(sentence)
+                # Just checking of the artilce that we are getting from the internet
+                # is about UCTT by checking if the UCTT/Ultra/Ham -Let word appears more than 4 time
+                checkString = 'UCTT'
+                checkString1 = 'Ultra'
+                checkString2 = 'Ham - Let'
+                count1 = text.count(checkString)
+                count2 = text.count(checkString1)
+                count3 = text.count(checkString2)
+                total_count = count3 + count2 + count1
 
-                    try:
-                        # get the sentimental score
-                        score = TextBlob(analysis).sentiment.polarity
+                # if the word UCTT or Ham - Let or Ultra Clean Holdings appear more
+                # than 3 times then only we go ahead and insert into our table.
+                if total_count > 4 or total_count == 4:
+                    self.thing.append(parsed_article)  # addition
+                    article_polarity = 0
+                    article_polarity = analysis.polarity  # get the polarity score of the article
+                    self.sum_total_polarity += analysis.polarity
+                    self.summary.append(parsed_article.summary)
 
-                        if(score > 0):
-                            positive_sentences += 1
-                            self.positive_counter += 1
-                            self.positive_list.append(analysis)
-                            self.positive_list.append(("\n"))
-                        if(score < 0):
-                            negative_senteces += 1
-                            self.negative_counter += 1
-                            self.negative_list.append(analysis)
-                            self.negative_list.append("\n")
+                    #  Reset the list
+                    self.positive_list = list()
+                    self.negative_list = list()
+                    positive_sentences = 0
+                    negative_senteces = 0
 
-                    except Exception as e:
-                        print(e)
-                # Insert into database
-                if(positive_sentences > 0  or negative_senteces > 0):
-                    pos = ''.join(self.positive_list)
-                    neg = ''.join(self.negative_list)
+                    # Loop through each sentence in the article and see if the sentence is positive or negative
+                    for sentence in analysis.sentences:
+                        analysis = str(sentence)
 
-                    #db.insert_january_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
-                    #db.insert_january_sentiments(title_param, date_param, pos, neg)
+                        try:
+                            # get the sentimental score
+                            score = TextBlob(analysis).sentiment.polarity
+
+                            if (score > 0):
+                                positive_sentences += 1
+                                self.positive_counter += 1
+                                self.positive_list.append(analysis)
+                                self.positive_list.append(("\n"))
+                            if (score < 0):
+                                negative_senteces += 1
+                                self.negative_counter += 1
+                                self.negative_list.append(analysis)
+                                self.negative_list.append("\n")
+
+                        except Exception as e:
+                            print(e)
+
+                    # Insert into database
+                    if (positive_sentences > 0 or negative_senteces > 0):
+                        pos = ''.join(self.positive_list)
+                        neg = ''.join(self.negative_list)
+
+                        #db.insert_january_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
+                        #db.insert_january_sentiments(title_param, date_param, pos, neg)
+
+                        #db.insert_feb_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
+                        #db.insert_feb_sentiments(title_param, date_param, pos, neg)
+
+                        #db.insert_march_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
+                        #db.insert_march_sentiments(title_param, date_param, pos, neg)
+
+                        #db.insert_april_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
+                        #db.insert_april_sentiments(title_param, date_param, pos, neg)
+
+                        #db.insert_may_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
+                        #db.insert_may_sentiments(title_param, date_param, pos, neg)
+
+                        #db.insert_june_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
+                        #db.insert_june_sentiments(title_param, date_param, pos, neg)
+
+                        #db.insert_july_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
+                        #db.insert_july_sentiments(title_param, date_param, pos, neg)
+
+                        #db.insert_august_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
+                        #db.insert_august_sentiments(title_param, date_param, pos, neg)
+
+                        #db.insert_september_description(title_param,date_param,link_param,positive_sentences,negative_senteces,article_polarity)
+                        #db.insert_september_sentiments(title_param,date_param,pos,neg)
 
 
-                    #db.insert_feb_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
-                    #db.insert_feb_sentiments(title_param, date_param, pos, neg)
-
-                    #db.insert_march_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
-                    #db.insert_march_sentiments(title_param, date_param, pos, neg)
-
-                    #db.insert_april_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
-                    #db.insert_april_sentiments(title_param, date_param, pos, neg)
-
-                    #db.insert_may_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
-                    #db.insert_may_sentiments(title_param, date_param, pos, neg)
-
-                    #db.insert_june_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
-                    #db.insert_june_sentiments(title_param, date_param, pos, neg)
-
-                    #db.insert_july_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
-                    #db.insert_july_sentiments(title_param, date_param, pos, neg)
-
-                    #db.insert_august_description(title_param, date_param, link_param, positive_sentences,negative_senteces, article_polarity)
-                    #db.insert_august_sentiments(title_param, date_param, pos, neg)
-
-                    #db.insert_september_description(title_param,date_param,link_param,positive_sentences,negative_senteces,article_polarity)
-                    #db.insert_september_sentiments(title_param,date_param,pos,neg)
         # show_stats(): takes zero arguments
         # This function displays information about the scraped articles after they have been parsed and passed through the
         # natural language processor
@@ -250,9 +269,7 @@ class ArticleSentiment:
 
     # if trying to run this with multiprocessing you must use the following command for it to run
     # if __name__ == '__main__':
-
-
 if __name__ == '__main__':
-    obj = ArticleSentiment('01/01/2021','01/31/2021')
+    obj = ArticleSentiment('02/01/2021','02/28/2021')
     obj.search_article_timeframe()
     obj.lexical_article_analyze(obj.result)
