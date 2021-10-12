@@ -1,8 +1,9 @@
 import collections
 
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from nltk.stem import WordNetLemmatizer
 import string
 
@@ -37,7 +38,7 @@ class MostCommonWords(object):
         # To eliminate duplicates, remember to split by punctuation, and use case demiliters.
         sia = SentimentIntensityAnalyzer()
         for word in self.a.lower().split():
-            word = word.replace("“","")   # remove quatation marks from text
+            word = word.replace("“", "")  # remove quatation marks from text
             word = word.replace("”", "")
             word = word.replace(".", "")
             word = word.replace(",", "")
@@ -47,7 +48,6 @@ class MostCommonWords(object):
             word = word.replace("â€œ", "")
             word = word.replace("â€˜", "")
             word = word.replace("*", "")
-
 
             # ignore empty words from text
             if not len(word) == 0:
@@ -77,19 +77,16 @@ class MostCommonWords(object):
                             else:
                                 wordcount[word] += 1
 
-
-
         # Print most common word
         # n_print = int(input("How many most common words to print: "))
         # print("\nOK. The {} most common words are as follows\n".format(n_print))
         word_counter = collections.Counter(wordcount)
         for word, count in word_counter.most_common(10):  # (n_print):
             score = sia.polarity_scores(word)
-            print(word, ": ", count , ":", score['compound'])
+            print(word, ": ", count, ":", score['compound'])
 
         # Close the file
         self.file.close()
-
 
         # Create a data frame of the most common words
         # Draw a bar chart
@@ -99,8 +96,6 @@ class MostCommonWords(object):
         ax.bar_label(ax.containers[0])
         plt.xticks(rotation=20, horizontalalignment="center")
         plt.show()
-
-
 
 #
 # oj = MostCommonWords()
