@@ -8,7 +8,7 @@ import sys
 import SQLiteDB
 
 print("The connection is made")
-conn = lite.connect('UCTT.db')
+conn = lite.connect('UCTTA.db')
 c = conn.cursor()
 
 

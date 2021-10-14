@@ -14,7 +14,7 @@ import sqlite3 as lite
 ob = word_frequency.MostCommonWords()  # MUST RENAME THESE OBJECTS TO BETTER REPRESENT THEIR FUNCTIONALITY
 obj = article_analysis.GUIFunctions()
 
-conn = sqlite3.connect('UCTT.db')
+conn = sqlite3.connect('UCTTA.db')
 c = conn.cursor()
 
 objs = SQLiteDB.SQLDb()
@@ -39,6 +39,7 @@ def summarize(url):
     summary.config(state='disabled')
     summary.option_clear()
 
+
     # analysis = TextBlob(article.text)
 
 
@@ -62,7 +63,7 @@ def selected(event):
 
 # GET QUERY from user
 def query():
-    conn = sqlite3.connect('UCTT.db')  # This will be removed its redundant to have due to the other other global object
+    conn = sqlite3.connect('UCTTA.db')  # This will be removed its redundant to have due to the other other global object
     c = conn.cursor()
 
     title_article = news_summary.get()  # Saves the title the user clicked into val
