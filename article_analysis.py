@@ -77,10 +77,11 @@ class GUIFunctions:
     def pie_chart(cls, datalist):
         fig, (ax, ax1) = plt.subplots(1, 2, figsize=(10, 10))
 
+        colors = ['#32CD32', '#ff0000', '#ffa500']
         # bar graph to visualise data
         type_of_sentiment = ['Positive', 'Negative', 'Neutral']
         data = datalist
-        rects = ax.bar(type_of_sentiment, data)
+        rects = ax.bar(type_of_sentiment, data,color = colors)
         ax.set_title("Bar graph for Sentiment Article Analysis ")
 
         for rect, label in zip(rects, data):
@@ -88,7 +89,8 @@ class GUIFunctions:
             ax.text(rect.get_x() + rect.get_width() / 2, height, label, ha='center', va='bottom')
 
         # Pie chart for data visualisation
-        ax1.pie(datalist, labels=type_of_sentiment, autopct='%1.1f%%', shadow=True, startangle=90)
+
+        ax1.pie(datalist, labels=type_of_sentiment, autopct='%1.1f%%', shadow=True, startangle=90, colors=colors)
         ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
         ax1.set_title("Pie chart for Sentiment Article Analysis ")
 
