@@ -114,7 +114,7 @@ class GUIFunctions:
     @classmethod
     def read_lines(cls):
         len_of_articles_list = []
-        file1 = open('data.txt', 'r')
+        file1 = open('TextFiles/data.txt', 'r')
         lines = file1.readlines()
         count = 0
         for line in lines:

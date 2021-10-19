@@ -3,7 +3,7 @@ from matplotlib import scale
 import numpy as np
 import matplotlib.pyplot as plt
 import sqlite3 as lite
-conn = lite.connect('Month.db')
+conn = lite.connect('databases/Month.db')
 c = conn.cursor()
 
 
