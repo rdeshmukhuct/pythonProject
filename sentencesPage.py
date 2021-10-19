@@ -25,7 +25,7 @@ class Ui_sentences(object):
         self.UCTTLogo = QtWidgets.QLabel(self.centralwidget)
         self.UCTTLogo.setGeometry(QtCore.QRect(140, -10, 671, 211))
         self.UCTTLogo.setText("")
-        self.UCTTLogo.setPixmap(QtGui.QPixmap("uct_original_logo.jpg"))
+        self.UCTTLogo.setPixmap(QtGui.QPixmap("images/uct_original_logo.jpg"))
         self.UCTTLogo.setObjectName("UCTTLogo")
         self.pushButtonPositive = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonPositive.setGeometry(QtCore.QRect(150, 620, 201, 91))

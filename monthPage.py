@@ -25,7 +25,7 @@ class Ui_Monthly(object):
         self.UCTTLogo = QtWidgets.QLabel(self.centralwidget)
         self.UCTTLogo.setGeometry(QtCore.QRect(20, 10, 541, 141))
         self.UCTTLogo.setText("")
-        self.UCTTLogo.setPixmap(QtGui.QPixmap("uct_original_logo.jpg"))
+        self.UCTTLogo.setPixmap(QtGui.QPixmap("images/uct_original_logo.jpg"))
         self.UCTTLogo.setObjectName("UCTTLogo")
         self.pushButtonJan = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonJan.setGeometry(QtCore.QRect(30, 230, 131, 71))

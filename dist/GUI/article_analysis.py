@@ -9,7 +9,7 @@ import numpy as np
 import word_frequency
 
 ob = word_frequency.MostCommonWords()
-conn = sqlite3.connect('databases/test.db')
+conn = sqlite3.connect('test.db')
 c = conn.cursor()
 
 
@@ -59,7 +59,7 @@ class GUIFunctions:
         ax.grid(True)
         ax.set_axisbelow(True)
         ax.set_title('{} Share Price'.format('UCTT'), color='white')
-        ax.figure.canvas.manager.set_window_title("Alpha Version v0.1 Alpha")
+        ax.figure.canvas.set_window_title("Alpha Version v0.1 Alpha")
         ax.set_facecolor('black')
         ax.figure.set_facecolor('#121212')
         ax.tick_params(axis='x', colors='white')

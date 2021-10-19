@@ -1,3 +1,4 @@
+import pandas as pd
 from newspaper import Article, ArticleException
 from matplotlib import pyplot as plt
 from GoogleNews import GoogleNews
@@ -14,12 +15,15 @@ import string
 from nltk.sentiment import SentimentIntensityAnalyzer
 import nltk
 import threading
+import datetime
 
 from nltk.tokenize.treebank import TreebankWordDetokenizer
+
 nltk.download('vader_lexicon')
 
 # download the stopwords
 from nltk.corpus import stopwords
+
 nltk.download('stopwords')
 from nltk.tokenize import word_tokenize
 import SQLiteDB
@@ -49,6 +53,8 @@ class ArticleSentiment:
         self.links = []
         self.url = np.array([])
         self.thing = []
+
+        self.time_s = []
 
         self.positive_counter = 0
         self.negative_counter = 0
@@ -83,21 +89,8 @@ class ArticleSentiment:
         article.download()
         try:
             article.parse()
-            text = TextBlob(article.text)
-            # added this just to get the entire text from all the articles that  we have scraped
-            # with open('EntireText.txt', 'a') as e:
-            #    try:
-            #        e.write("%s\n" % text)
-            #   except:
-            #        pass
-
+            # text = TextBlob(article.text)
             article.nlp()
-            # added this to get the summary of all the articles
-            # with open('SummaryText.txt', 'a') as s:
-            #   try:
-            #        s.write("%s\n" % text)
-            #    except:
-            #        pass
         except Exception as e:
             print(e)
         return article
@@ -120,6 +113,10 @@ class ArticleSentiment:
             parsed_article = self.parse_articles(articles)
 
             analysis = self.analyze_sentence(parsed_article)  # returns the analyzed version of the article
+
+            print("From Lex", analysis.polarity)
+            self.time_s.append(analysis.polarity)
+
             self.thing.append(parsed_article)  # addition
             self.sum_total_polarity += analysis.polarity
             self.summary.append(parsed_article.summary)
@@ -197,6 +194,17 @@ class ArticleSentiment:
         plt.title("Individual Article Sentiment")
         plt.show()
 
+    def time_series(self):
+
+        time = [i for i in range(0, len(self.time_s))]
+
+        #data = pd.DataReader(None, None, self.start_date, self.end_date)
+        #data['Date'] = data['Date'].map(mdates.date2num)
+        #data = [datetime.datetime(2021,i, 1, 0) for i in range(50)]
+
+        df_time_series = pd.DataFrame({'Article': time, 'Sentiment': self.time_s})
+        df_time_series.plot('Article', 'Sentiment')
+
     # This function can be removed because article_analysis.py has a pie chart function that does the same thing.
     def show_pie(self):
         data = [len(self.positive_list), len(self.negative_list), len(self.neutral_list)]
@@ -215,7 +223,7 @@ class ArticleSentiment:
 # if trying to run this with multiprocessing you must use the following command for it to run
 # if __name__ == '__main__':
 
-# added the feature where instead of hardcoding the dates the user can select the dates and
+# added the feature where instead of hardcoded the dates the user can select the dates and
 # the articles will be scraped based on that dates
 if __name__ == '__main__':
     def call():
@@ -286,11 +294,11 @@ if __name__ == '__main__':
         t8.join()
 
         end = time.time()
-        # stats = DisplayStat()
+
+        obj.time_series()
         obj.show_stats()
         obj.show_pie()
 
-        # end = time.time()
         print("Total Runtime of the Program is: {:.2f} seconds".format(end - begin))
 
         # here we can call the sqlite method to update the positive, negative and neutral tables.
@@ -301,27 +309,6 @@ if __name__ == '__main__':
         db.insert_data_positive(obj.positive_list)
         db.close()
 
-        # with open('PositiveText.txt', 'w') as p:
-        #    for item in obj.positive_list:
-        #        try:
-        #            p.write("%s\n" % item)
-        #        except:
-        #            pass
-
-        # with open('NegativeText.txt', 'w') as f:
-        #    for item in obj.negative_list:
-        #        try:
-        #            f.write("%s\n" % item)
-        #        except:
-        #             pass
-        # with open('NeutralText.txt', 'w') as n:
-        #    for item in obj.neutral_list:
-        #        try:
-        #            n.write("%s\n" % item)
-        #        except:
-        #            pass
-
-        # print(len(obj.neutral_list))
         obj.store_sentiment_data()
 
 
