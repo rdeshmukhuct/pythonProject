@@ -119,8 +119,8 @@ class Ui_Monthly(object):
         self.newWindow('january_description')
 
     def FebBarGraph(self):
-        db.individualBarGraph('feb_description')
-        self.newWindow('feb_description')
+        db.individualBarGraph('february_description')
+        self.newWindow('february_description')
 
     def MarchBarGraph(self):
         db.individualBarGraph('march_description')

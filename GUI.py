@@ -14,7 +14,7 @@ import sqlite3 as lite
 ob = word_frequency.MostCommonWords()  # MUST RENAME THESE OBJECTS TO BETTER REPRESENT THEIR FUNCTIONALITY
 obj = article_analysis.GUIFunctions()
 
-conn = sqlite3.connect('databases/UCTT.db')
+conn = sqlite3.connect('UCTTA.db')
 c = conn.cursor()
 
 objs = SQLiteDB.SQLDb()
@@ -24,12 +24,6 @@ objs = SQLiteDB.SQLDb()
 # it displays the summarize article from a list of scraped article from google.
 # it calls the class article_analysis.py
 def summarize(url):
-    print("SUMMARIZE(): ", url)
-
-    # user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
-    # config = newspaper.Config()
-    # config.browser_user_agent = user_agent
-
     article = Article(url)
     article.download()
 
@@ -38,17 +32,13 @@ def summarize(url):
         article.nlp()
     except Exception as e:
         print("<>", e)  # DEBUGGING PURPOSES
-    # finally:
-    #     article = Article(url, config=config)
-    #     article.download()
-    #     article.parse()
-    #     article.nlp()
 
     summary.config(state='normal')
     summary.delete('1.0', 'end')
     summary.insert('1.0', article.summary)
     summary.config(state='disabled')
     summary.option_clear()
+
 
     # analysis = TextBlob(article.text)
 
@@ -73,7 +63,7 @@ def selected(event):
 
 # GET QUERY from user
 def query():
-    conn = sqlite3.connect('databases/UCTT.db')  # This will be removed its redundant to have due to the other other global object
+    conn = sqlite3.connect('UCTTA.db')  # This will be removed its redundant to have due to the other other global object
     c = conn.cursor()
 
     title_article = news_summary.get()  # Saves the title the user clicked into val

@@ -59,19 +59,22 @@ class ArticleSentiment:
 
         self.list_of_months = ["january_sentiments", "february_sentiments", "march_sentiments", "april_sentiments",
                                "may_sentiments", "june_sentiments", "july_sentiments", "august_sentiments",
-                               "september_sentiments", "october_sentiments", "november_sentiments",
-                               "december_sentiments"]
-        # Create all the month tables in the database
+                               "september_sentiments", "october_sentiments"]
+        self.list_of_months_description = ["january_description", "february_description", "march_description", "april_description",
+                               "may_description", "june_description", "july_description", "august_description",
+                               "september_description", "october_description"]
+        # Create all the month tables
         for month in self.list_of_months:
-            db.create_month_description(month)
             db.create_month_sentiments(month)
+        for month in self.list_of_months_description:
+            db.create_month_description(month)
 
     # This can also be change later. article_analysis.py has the same function
     # Read the documentation in article_analysis.py for more information
     def search_article_timeframe(self):
         google_news = GoogleNews()
         google_news.set_lang('en')
-        google_news.set_time_range('01/01/2021', '01/31/2021')
+        google_news.set_time_range('09/01/2021', '09/30/2021')
         google_news.set_encode('utf-8')
 
         # google_news.get_news('UCTT')      # Cannot use this for time range
@@ -86,22 +89,30 @@ class ArticleSentiment:
             print(result['title'])
 
         # SQL call here
+        # parse_articles() takes one argument which is the text file from the list and returns the processed article
+        # This is the most costly and time consuming function in the class, because of parse() and nlp() which
+        # take the most amount of time to compute. time to compute is usually greater than 70
 
-    # set_month(): takes no arguments and returns the the first element in list_of_months
-    # it parses the start_month and creates a new list that is split by "/"
-    # it then passes the numerical value that was split from start month and retrieves that value
-    # in list_of_months
     def set_month(self):
-        start_month = '01/01/2021'
-        end_month = '01/31/2021'
+
+        start_month = '09/01/2021'
+        end_month = '09/30/2021'
         month_value = start_month.split('/')
         value = int(month_value[0])
 
-        return self.list_of_months[value - 1]
+        return self.list_of_months[value-1]
 
-    # parse_articles() takes one argument which is the text file from the list and returns the processed article
-    # This is the most costly and time consuming function in the class, because of parse() and nlp() which
-    # take the most amount of time to compute. time to compute is usually greater than 70
+    def set_month_description(self):
+
+        start_month = '09/01/2021'
+        end_month = '09/30/2021'
+        month_value = start_month.split('/')
+        value = int(month_value[0])
+
+        return self.list_of_months_description[value - 1]
+
+
+
     @classmethod
     def parse_articles(cls, articles):
         article = Article(articles, fetch_images=False)
@@ -128,7 +139,7 @@ class ArticleSentiment:
     # Once the articles ae parsed its then append into its sentiment list in the second for loop.
     # loop here contains the links to all the articles
     def lexical_article_analyze(self, loop):
-        # counter = 0
+        #counter = 0
         for articles in loop:
             print("The current article link is : ", articles['link'])
             # values to be inserted to our table
@@ -138,48 +149,75 @@ class ArticleSentiment:
 
             parsed_article = self.parse_articles(articles['link'])
 
+
             analysis = self.analyze_sentence(parsed_article)  # returns the analyzed version of the article
-            self.thing.append(parsed_article)  # addition
-            article_polarity = 0
-            article_polarity = analysis.polarity  # get the polarity score of the article
-            self.sum_total_polarity += analysis.polarity
-            self.summary.append(parsed_article.summary)
+            text = analysis.split()
 
-            #  Reset the list
-            self.positive_list = list()
-            self.negative_list = list()
-            positive_sentences = 0
-            negative_senteces = 0
+            # Just checking of the artilce that we are getting from the internet
+            # is about UCTT by checking if the UCTT/Ultra/Ham -Let word appears more than 4 time
+            checkString = 'UCTT'
+            checkString1 = 'Ultra'
+            checkString2 = 'Ham - Let'
+            count1 = text.count(checkString)
+            count2 = text.count(checkString1)
+            count3 = text.count(checkString2)
+            total_count = count3 + count2 + count1
+            # if the word UCTT or Ham - Let or Ultra Clean Holdings appear more
+            # than 3 times then only we go ahead and insert into our table.
+            if total_count > 3 or total_count == 3:
+                self.thing.append(parsed_article)  # addition
+                article_polarity = 0
+                article_polarity = analysis.polarity  # get the polarity score of the article
+                self.sum_total_polarity += analysis.polarity
+                self.summary.append(parsed_article.summary)
 
-            for sentence in analysis.sentences:
-                analysis = str(sentence)
+                #  Reset the list
+                self.positive_list = list()
+                self.negative_list = list()
+                positive_sentences = 0
+                negative_sentences = 0
 
-                try:
-                    # get the sentimental score
-                    score = TextBlob(analysis).sentiment.polarity
+                for sentence in analysis.sentences:
+                    analysis = str(sentence)
 
-                    if score > 0:
-                        positive_sentences += 1
-                        self.positive_counter += 1
-                        self.positive_list.append(analysis)
-                        self.positive_list.append("\n")
-                    if score < 0:
-                        negative_senteces += 1
-                        self.negative_counter += 1
-                        self.negative_list.append(analysis)
-                        self.negative_list.append("\n")
+                    try:
+                        # get the sentimental score
+                        score = TextBlob(analysis).sentiment.polarity
 
-                except Exception as e:
-                    print(e)
+                        if (score > 0):
+                            positive_sentences += 1
+                            self.positive_counter += 1
+                            self.positive_list.append(analysis)
+                            self.positive_list.append(("\n"))
+                        if (score < 0):
+                            negative_sentences += 1
+                            self.negative_counter += 1
+                            self.negative_list.append(analysis)
+                            self.negative_list.append("\n")
 
-            # Insert into database
-            if positive_sentences > 0 or negative_senteces > 0:
-                pos = ''.join(self.positive_list)
-                neg = ''.join(self.negative_list)
+                    except Exception as e:
+                        print(e)
+                # Insert into database
+                if (positive_sentences > 0 or negative_sentences > 0):
+                    pos = ''.join(self.positive_list)
+                    neg = ''.join(self.negative_list)
 
-                db.insert_month_description(self.set_month(), title_param, date_param, link_param, positive_sentences,
-                                            negative_senteces, article_polarity)
-                db.insert_month_sentiments(self.set_month(), title_param, date_param, pos, neg)
+                    # for i in self.list_of_months:
+                    # month = self.list_of_months[counter]
+                    print(self.set_month())
+                    print(self.set_month_description())
+                    print("Here")
+                    print(title_param, date_param, link_param, positive_sentences, negative_sentences, article_polarity)
+                    db.insert_month_description(self.set_month_description(), title_param, date_param, link_param,
+                                                positive_sentences, negative_sentences,
+                                                article_polarity)
+                    # db.insert_month_description(self.set_month_description(), title_param, date_param, link_param, positive_sentences,negative_sentences,article_polarity)
+                    db.insert_month_sentiments(self.set_month(), title_param, date_param, pos, neg)
+                    # print(month)
+                    # counter += 1
+
+
+
 
     # show_stats(): takes zero arguments This function displays information about the scraped articles after they
     # have been parsed and passed through the natural language processor Shows the number of
@@ -223,6 +261,6 @@ class ArticleSentiment:
 
 
 if __name__ == '__main__':
-    obj = ArticleSentiment('01/01/2021', '01/31/2021')
+    obj = ArticleSentiment('07/01/2021', '07/31/2021')
     obj.search_article_timeframe()
     obj.lexical_article_analyze(obj.result)

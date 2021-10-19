@@ -30,7 +30,7 @@ class Ui_MainWindowSummary(object):
         self.Logo = QtWidgets.QLabel(self.centralwidget)
         self.Logo.setGeometry(QtCore.QRect(10, -30, 491, 221))
         self.Logo.setText("")
-        self.Logo.setPixmap(QtGui.QPixmap("images/uct_original_logo.jpg"))
+        self.Logo.setPixmap(QtGui.QPixmap("uct_original_logo.jpg"))
         self.Logo.setObjectName("Logo")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(50, 190, 471, 31))
@@ -68,7 +68,7 @@ class Ui_MainWindowSummary(object):
     def summary(self):
         title = self.comboBoxArticles.currentText()
         conn = sqlite3.connect(
-            'databases/UCTT.db')  # This will be removed its redundant to have due to the other other global object
+            'UCTTA.db')  # This will be removed its redundant to have due to the other other global object
         c = conn.cursor()
         sql_command = "SELECT link FROM articles WHERE title =?"
         c.execute(sql_command, [title])  # Passes string sql command and value from button

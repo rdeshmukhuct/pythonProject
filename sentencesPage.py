@@ -66,6 +66,8 @@ class Ui_sentences(object):
         self.pushButtonNegative.clicked.connect(self.negative)
 
     def positive(self):
+        print(self.month)
+        print(self.curr_title)
         result = db.getPositiveSentences(self.curr_title, self.month)
         self.textField.clear()
         self.textField.insertPlainText(result)
