@@ -18,7 +18,6 @@ ob = word_frequency.MostCommonWords()  # MUST RENAME THESE OBJECTS TO BETTER REP
 obj = article_analysis.GUIFunctions()
 
 
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -34,7 +33,7 @@ class Ui_MainWindow(object):
         font.setPointSize(14)
         self.pushButtonStock.setFont(font)
         self.pushButtonStock.setStyleSheet("border-color: rgb(85, 0, 255);\n"
-"")
+                                           "")
         self.pushButtonStock.setObjectName("pushButtonStock")
         self.logo = QtWidgets.QLabel(self.centralwidget)
         self.logo.setGeometry(QtCore.QRect(10, 0, 621, 201))
@@ -55,7 +54,7 @@ class Ui_MainWindow(object):
         font.setPointSize(14)
         self.pushButtonVisualisation.setFont(font)
         self.pushButtonVisualisation.setStyleSheet("border-color: rgb(85, 0, 255);\n"
-"")
+                                                   "")
         self.pushButtonVisualisation.setObjectName("pushButtonVisualisation")
         self.pushButtonBargraph = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonBargraph.setGeometry(QtCore.QRect(180, 370, 241, 51))
@@ -64,7 +63,7 @@ class Ui_MainWindow(object):
         font.setPointSize(14)
         self.pushButtonBargraph.setFont(font)
         self.pushButtonBargraph.setStyleSheet("border-color: rgb(85, 0, 255);\n"
-"")
+                                              "")
         self.pushButtonBargraph.setObjectName("pushButtonBargraph")
         self.pushButtonSummary = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonSummary.setGeometry(QtCore.QRect(180, 430, 241, 51))
@@ -73,7 +72,7 @@ class Ui_MainWindow(object):
         font.setPointSize(14)
         self.pushButtonSummary.setFont(font)
         self.pushButtonSummary.setStyleSheet("border-color: rgb(85, 0, 255);\n"
-"")
+                                             "")
         self.pushButtonSummary.setObjectName("pushButtonSummary")
         self.labelImageBar = QtWidgets.QLabel(self.centralwidget)
         self.labelImageBar.setGeometry(QtCore.QRect(110, 370, 71, 51))
@@ -121,16 +120,19 @@ class Ui_MainWindow(object):
         self.pushButtonSummary.clicked.connect(self.summary)
 
     def MarketStock(self):
-            obj.visualize()
+        obj.visualize()
+
     def dataVisualization(self):
         values = obj.read_lines()
         obj.pie_chart(values)
+
     def barGraph(self):
         # Code to open a new window , bar graph
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_BarGraph()
         self.ui.setup(self.window)
         self.window.show()
+
     def summary(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_MainWindowSummary()
@@ -138,9 +140,9 @@ class Ui_MainWindow(object):
         self.window.show()
 
 
-
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
