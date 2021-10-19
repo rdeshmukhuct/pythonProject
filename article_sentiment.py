@@ -215,7 +215,7 @@ class ArticleSentiment:
         data = [len(self.positive_list), len(self.negative_list), len(self.neutral_list)]
 
         # sqlite ???? insert_occurances ???
-        with open('data.txt', 'w') as f:
+        with open('TextFiles/data.txt', 'w') as f:
             for item in data:
                 f.write("%d\n" % item)
 

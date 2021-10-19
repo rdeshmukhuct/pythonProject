@@ -28,7 +28,7 @@ class MostCommonWords(object):
         return [' '.join([lemmatizer.lemmatize(word) for word in review.split()]) for review in self.file]
 
     def stopwords(self):
-        stopwords = set(line.strip() for line in open('stopwords.txt'))
+        stopwords = set(line.strip() for line in open('TextFiles/stopwords.txt'))
         stopwords = stopwords.union(set(['--', '-']))
 
         # print(stopwords)
