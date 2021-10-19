@@ -8,7 +8,7 @@ import sys
 # import SQLiteDB
 
 print("The connection is made")
-conn = lite.connect('UCTT.db')
+conn = lite.connect('databases/UCTT.db')
 c = conn.cursor()
 
 
@@ -87,7 +87,6 @@ class SQLDb:
         # print("data inserted")
 
         for item in negative_list:
-
             try:
                 # print("inert negative")
                 c.execute("INSERT INTO negative_texts(negative) VALUES(?)", (item,))

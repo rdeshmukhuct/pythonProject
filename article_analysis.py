@@ -9,7 +9,7 @@ import numpy as np
 import word_frequency
 
 ob = word_frequency.MostCommonWords()
-conn = sqlite3.connect('test.db')
+conn = sqlite3.connect('databases/test.db')
 c = conn.cursor()
 
 

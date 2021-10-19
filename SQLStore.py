@@ -22,7 +22,7 @@ for item in result:
 #     print(it)
 
 # had to change the name of the db as for some reason test.db giving wierd errors
-conn = lite.connect('UCTT.db')
+conn = lite.connect('databases/UCTT.db')
 c = conn.cursor()
 
 # We don't want our table to be added with the same data always so everytime we drop the table and

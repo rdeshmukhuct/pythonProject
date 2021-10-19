@@ -27,7 +27,7 @@ class Ui_Article(object):
         self.UCTTLogo = QtWidgets.QLabel(self.centralwidget)
         self.UCTTLogo.setGeometry(QtCore.QRect(20, 10, 541, 141))
         self.UCTTLogo.setText("")
-        self.UCTTLogo.setPixmap(QtGui.QPixmap("uct_original_logo.jpg"))
+        self.UCTTLogo.setPixmap(QtGui.QPixmap("images/uct_original_logo.jpg"))
         self.UCTTLogo.setObjectName("UCTTLogo")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(130, 170, 431, 41))

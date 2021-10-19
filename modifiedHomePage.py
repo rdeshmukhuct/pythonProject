@@ -16,9 +16,6 @@ from monthPage import *
 db = SQLiteDBModified.SQLDbModified()
 
 
-
-
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -28,7 +25,7 @@ class Ui_MainWindow(object):
         self.UCTTLogo = QtWidgets.QLabel(self.centralwidget)
         self.UCTTLogo.setGeometry(QtCore.QRect(20, 10, 541, 141))
         self.UCTTLogo.setText("")
-        self.UCTTLogo.setPixmap(QtGui.QPixmap("uct_original_logo.jpg"))
+        self.UCTTLogo.setPixmap(QtGui.QPixmap("images/uct_original_logo.jpg"))
         self.UCTTLogo.setObjectName("UCTTLogo")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(170, 280, 131, 71))
@@ -61,15 +58,17 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pushButton.setText(_translate("MainWindow", "Yearly"))
-        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:20pt; color:#0000ff;\">Sentiment Analysis</span></p></body></html>"))
+        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:20pt; "
+                                                    "color:#0000ff;\">Sentiment Analysis</span></p></body></html>"))
         self.pushButton_2.setText(_translate("MainWindow", "Monthly"))
 
-        self.pushButton.clicked.connect(self.combined)    # Yearly Button clicked
-        self.pushButton_2.clicked.connect(self.monthly)    # Monthly button clicked
+        self.pushButton.clicked.connect(self.combined)  # Yearly Button clicked
+        self.pushButton_2.clicked.connect(self.monthly)  # Monthly button clicked
 
     # Combined bar graph method is called from the ModifiedSqlLite
     def combined(self):
         db.combinedBarGraph()
+
     def monthly(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_Monthly()
@@ -77,9 +76,9 @@ class Ui_MainWindow(object):
         self.window.show()
 
 
-
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
