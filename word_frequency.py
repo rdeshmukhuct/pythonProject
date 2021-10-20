@@ -1,6 +1,4 @@
 import collections
-
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -81,20 +79,28 @@ class MostCommonWords(object):
         # n_print = int(input("How many most common words to print: "))
         # print("\nOK. The {} most common words are as follows\n".format(n_print))
         word_counter = collections.Counter(wordcount)
+        word_list = []
+        words = []
         for word, count in word_counter.most_common(10):  # (n_print):
             score = sia.polarity_scores(word)
             print(word, ": ", count, ":", score['compound'])
+            word_list.append(count)
+            words.append(word)
 
+        for w in word_list:
+            print(w)
         # Close the file
         self.file.close()
+        X = words
+        data = word_list
 
-        # Create a data frame of the most common words
-        # Draw a bar chart
-        lst = word_counter.most_common(10)  # (n_print)
-        df = pd.DataFrame(lst, columns=['Word', 'Count'])
-        ax = df.plot.bar(x='Word', y='Count')
-        ax.bar_label(ax.containers[0])
-        plt.xticks(rotation=20, horizontalalignment="center")
+        X_axis = np.arange(len(X))
+
+        plt.bar(X_axis - 0.2, data, 0.4, label='Words')
+
+        plt.xticks(X_axis, X, rotation=45)
+
+        plt.legend()
         plt.show()
 
 #

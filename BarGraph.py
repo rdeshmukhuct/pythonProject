@@ -10,6 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import word_frequency
+import matplotlib
 
 ob = word_frequency.MostCommonWords()
 
