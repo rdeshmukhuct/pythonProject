@@ -18,8 +18,8 @@ ob = word_frequency.MostCommonWords()  # MUST RENAME THESE OBJECTS TO BETTER REP
 obj = article_analysis.GUIFunctions()
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+class Ui_MainWindowMenu(object):
+    def setupUiMenu(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(523, 607)
         MainWindow.setAutoFillBackground(False)
@@ -145,7 +145,7 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
+    ui = Ui_MainWindowMenu()
+    ui.setupUiMenu(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
