@@ -9,11 +9,15 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
+import MySQLDatabaseModified
 import SQLiteDBModified
 
 from monthPage import *
 
-db = SQLiteDBModified.SQLDbModified()
+
+#db = SQLiteDBModified.SQLDbModified()
+db = MySQLDatabaseModified.MySQLDbModified()
 
 
 class Ui_MainWindow(object):

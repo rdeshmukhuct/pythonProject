@@ -24,8 +24,11 @@ from nltk.tokenize.treebank import TreebankWordDetokenizer
 # nltk.download('stopwords')
 from nltk.tokenize import word_tokenize
 import SQLiteDBModified
+import MySQLDatabaseModified
+db = MySQLDatabaseModified.MySQLDbModified()
 
-db = SQLiteDBModified.SQLDbModified()
+#db = SQLiteDBModified.SQLDbModified()
+
 
 
 # ReadMe -> This class analyzes the polarity and sentiment of each article scarped form the internet
@@ -261,6 +264,6 @@ class ArticleSentiment:
 
 
 if __name__ == '__main__':
-    obj = ArticleSentiment('07/01/2021', '07/31/2021')
+    obj = ArticleSentiment('09/01/2021', '09/30/2021')
     obj.search_article_timeframe()
     obj.lexical_article_analyze(obj.result)

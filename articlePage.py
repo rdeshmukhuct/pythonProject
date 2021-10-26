@@ -9,9 +9,12 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from matplotlib.pyplot import title
+
+import MySQLDatabaseModified
 import SQLiteDBModified
 
-db = SQLiteDBModified.SQLDbModified()
+#db = SQLiteDBModified.SQLDbModified()
+db = MySQLDatabaseModified.MySQLDbModified()
 from sentencesPage import *
 
 
