@@ -119,17 +119,17 @@ class Ui_BarGraph(object):
     def positive(self):
         textFile = "TextFiles/PositiveText.txt"
         ob.enter_file(textFile)
-        ob.stopwords()
+        ob.stopwords("pos")
 
     def neutral(self):
         textFile = "TextFiles/NeutralText.txt"
         ob.enter_file(textFile)
-        ob.stopwords()
+        ob.stopwords("neutr")
 
     def negative(self):
         textFile = "TextFiles/NegativeText.txt"
         ob.enter_file(textFile)
-        ob.stopwords()
+        ob.stopwords("neg")
 
 
 if __name__ == "__main__":

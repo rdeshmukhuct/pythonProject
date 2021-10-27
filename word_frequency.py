@@ -7,6 +7,11 @@ import string
 
 from nltk.sentiment import SentimentIntensityAnalyzer
 
+import MySQLDB
+
+db = MySQLDB.MYSQLDb()
+
+
 
 # MostCommonWords() finds the most common words in a text file
 # Read input file, note the encoding is specified here
@@ -19,13 +24,12 @@ class MostCommonWords(object):
 
     def enter_file(self, file):
         self.file = open(file, encoding='cp1252')
-        self.a = self.file.read()
 
     def lemmatiztion(self):
         lemmatizer = WordNetLemmatizer()
         return [' '.join([lemmatizer.lemmatize(word) for word in review.split()]) for review in self.file]
 
-    def stopwords(self):
+    def stopwords(self, emotion):
         stopwords = set(line.strip() for line in open('TextFiles/stopwords.txt'))
         stopwords = stopwords.union(set(['--', '-']))
 
@@ -33,6 +37,39 @@ class MostCommonWords(object):
         # Instantiate a dictionary, and for every word in the file,
         # Add to the dictionary if it doesn't exist. If it does, increase the count.
         wordcount = {}
+        if emotion == "pos":
+            rows = db.getPositiveTexts()
+            listTexts = list()
+            for row in rows:
+                listTexts.append(row[0])
+
+            # print(listTexts)
+            self.a = ""
+            self.a = '.'.join(listTexts)
+        elif emotion == "neg":
+            rows = db.getNegativeTexts()
+            listTexts = list()
+            for row in rows:
+                listTexts.append(row[0])
+
+            # print(listTexts)
+            self.a = ""
+            self.a = '.'.join(listTexts)
+        elif emotion == "neutr":
+            rows = db.getNeutralTexts()
+            listTexts = list()
+            for row in rows:
+                listTexts.append(row[0])
+
+            # print(listTexts)
+            self.a = ""
+            self.a = '.'.join(listTexts)
+
+
+
+
+
+
         # To eliminate duplicates, remember to split by punctuation, and use case demiliters.
         sia = SentimentIntensityAnalyzer()
         for word in self.a.lower().split():
