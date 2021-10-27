@@ -117,18 +117,12 @@ class Ui_BarGraph(object):
         self.pushButtonNegative.clicked.connect(self.negative)
 
     def positive(self):
-        textFile = "TextFiles/PositiveText.txt"
-        ob.enter_file(textFile)
         ob.stopwords("pos")
 
     def neutral(self):
-        textFile = "TextFiles/NeutralText.txt"
-        ob.enter_file(textFile)
         ob.stopwords("neutr")
 
     def negative(self):
-        textFile = "TextFiles/NegativeText.txt"
-        ob.enter_file(textFile)
         ob.stopwords("neg")
 
 

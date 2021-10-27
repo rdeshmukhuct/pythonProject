@@ -19,12 +19,7 @@ db = MySQLDB.MYSQLDb()
 
 class MostCommonWords(object):
     def __init__(self):
-        self.file = ""
-        self.a = self.file
-
-    def enter_file(self, file):
-        self.file = open(file, encoding='cp1252')
-
+        self.a = ""
     def lemmatiztion(self):
         lemmatizer = WordNetLemmatizer()
         return [' '.join([lemmatizer.lemmatize(word) for word in review.split()]) for review in self.file]
@@ -92,14 +87,14 @@ class MostCommonWords(object):
                         # Get the polarity score of each word
                         score = sia.polarity_scores(word)
                         # if the file is positive , add only those words that have polarity scora > 0
-                        if (self.file.name == "PositiveText.txt"):
+                        if emotion == "pos":
                             if (score['compound'] > 0):
                                 if word not in wordcount:
                                     wordcount[word] = 1
                                 else:
                                     wordcount[word] += 1
                         # if the file is negative , add only those words that have polarity scora <  0
-                        elif (self.file.name == "NegativeText.txt"):
+                        elif emotion == "neg":
                             if (score['compound'] < 0):
                                 if word not in wordcount:
                                     wordcount[word] = 1
@@ -126,8 +121,6 @@ class MostCommonWords(object):
 
         for w in word_list:
             print(w)
-        # Close the file
-        self.file.close()
         X = words
         data = word_list
 
