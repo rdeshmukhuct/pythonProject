@@ -67,8 +67,8 @@ class Ui_MainWindowSummary(object):
 
     def summary(self):
         title = self.comboBoxArticles.currentText()
-        conn = sqlite3.connect(
-            'databases/UCTTA.db')  # This will be removed its redundant to have due to the other other global object
+        conn = sqlite3.connect('databases/UCTTA.db')
+            #'databases/UCTTA.db')  # This will be removed its redundant to have due to the other other global object
         c = conn.cursor()
         sql_command = "SELECT link FROM articles WHERE title =?"
         c.execute(sql_command, [title])  # Passes string sql command and value from button

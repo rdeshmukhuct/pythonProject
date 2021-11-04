@@ -49,7 +49,7 @@ class GUIFunctions:
     @classmethod
     def visualize(cls):
         # HAML ticker not found, so using UCTT for debugging purposes
-        data = web.DataReader('UCTT', 'yahoo', '08/01/2021', '08/16/2021')
+        data = web.DataReader('UCTT', 'yahoo', '08/25/2018', '11/2/2021')
         data = data[['Open', 'High', 'Low', 'Close']]
 
         data.reset_index(inplace=True)
