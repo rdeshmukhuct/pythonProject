@@ -1,31 +1,35 @@
 import sqlite3 as lite
+from calendar import month
+
 from matplotlib import scale
 import numpy as np
 import matplotlib.pyplot as plt
 import sqlite3 as lite
 import mysql.connector
 
-conn = lite.connect('databases/Month.db')
+conn = mysql.connector.connect(user='Admin', password='UCT123@!',
+                              host='10.0.0.185',
+                              database='uctt')
 c = conn.cursor()
 
 
 
-class SQLDbModified:
+class MySQLDbModified:
 
     # Done
     @classmethod
     def create_month_description(cls, month_sentiment):
         try:
-                print("The month sentiment is ", month_sentiment)
-                c.execute("""CREATE TABLE "{}" (
-                                                        title text,
-                                                        datetime text,
-                                                        link text,
-                                                        positive INTEGER,
-                                                        negative INTEGER,
-                                                        polarity Integer
-                                             )""".format(month_sentiment))
-                print("Table created")
+            sql = "CREATE TABLE " + month_sentiment + """ (
+               title VARCHAR(300),
+               datetime VARCHAR(100),
+               link MEDIUMTEXT,
+               positive INT,
+               negative INT,
+               polarity FLOAT
+            )"""
+            c.execute(sql)
+            print(sql)
         except Exception as e:
             print(e);
 
@@ -35,13 +39,14 @@ class SQLDbModified:
     def create_month_sentiments(cls, month_sentiment):
         print("The month sentiment is ", month_sentiment)
         try:
-
-            c.execute("""CREATE TABLE "{}" (
-                                                 title text,
-                                                 datetime text,
-                                                 positive text,
-                                                 negative text
-                                      )""".format(month_sentiment))
+            sql = "CREATE TABLE " + month_sentiment + """ (
+                           title VARCHAR(300),
+                           datetime VARCHAR(100),
+                           positive LONGTEXT,
+                           negative LONGTEXT
+                        )"""
+            c.execute(sql)
+            print(sql)
             print("Table created")
         except Exception as e:
             print(e)
@@ -50,7 +55,13 @@ class SQLDbModified:
     def insert_month_sentiments(self, month_sentiment, title, date, positive, negative):
         print("Sentiment", month_sentiment)
         try:
-            c.execute(""" INSERT INTO %s VALUES (?, ?, ?,?)""" %month_sentiment, (title, date, positive, negative))
+           print(title)
+           values = (title,date,positive,negative)
+           mySql_insert_query = "INSERT INTO " + month_sentiment + """ (title, datetime, positive, negative) 
+                                          VALUES (%s, %s, %s, %s) """
+
+           c.execute(mySql_insert_query, values)
+           print(mySql_insert_query)
 
         except Exception as e:
             print("failed +ve: ", e)
@@ -60,15 +71,45 @@ class SQLDbModified:
     def insert_month_description(self, month_sentiment, title, date, link, positive, negative, polarity):
         print("description" , month_sentiment)
         try:
-            c.execute(""" INSERT INTO %s VALUES (?, ?, ?,?,?,?)""" %month_sentiment, (title, date,link, positive, negative,polarity))
+            values = (title, date, link, positive, negative, polarity)
+            mySql_insert_query = "INSERT INTO " + month_sentiment + """ (title, datetime, link ,positive, negative, polarity) 
+                                                     VALUES (%s, %s, %s, %s, %s, %s) """
+
+            c.execute(mySql_insert_query, values)
+            print(mySql_insert_query)
+        except Exception as e:
+            print("failed +ve: ", e)
+        conn.commit()
+
+        # Done
+
+    @classmethod
+    def create_description(cls):
+        try:
+            print("Here is create")
+            sql = "CREATE TABLE combined (title VARCHAR(300),datetime DATE,link MEDIUMTEXT," \
+                  "positive INT,negative INT,polarity FLOAT) "
+            c.execute(sql)
+        except Exception as e:
+            print(e);
+
+    @classmethod
+    def insert_description(self, title, date, link, positive, negative, polarity):
+        try:
+            print("Trying the insert")
+            values = (title, date, link, positive, negative, polarity)
+            mySql_insert_query = "INSERT INTO combined (title, datetime, link ,positive, negative, polarity) VALUES (%s, %s, %s, %s, %s, %s) "
+
+            c.execute(mySql_insert_query, values)
+            print(mySql_insert_query)
         except Exception as e:
             print("failed +ve: ", e)
         conn.commit()
 
     @classmethod
     def get_month_description(cls, month_sentiment):
-
-        value_pass = 'SELECT * FROM "{}" '.format(month_sentiment)
+        print("Hello from get_month_description")
+        value_pass = "SELECT * FROM " + month_sentiment
         c.execute(value_pass)
         rows = c.fetchall()
         print(len(rows))
@@ -81,8 +122,8 @@ class SQLDbModified:
 
     @classmethod
     def get_month_sentiments(cls, month_sentiment):
-
-        value_pass = 'SELECT * FROM "{}" '.format(month_sentiment)
+        print("Hello from get_month_sentiment")
+        value_pass = "SELECT * FROM " + month_sentiment
         c.execute(value_pass)
         rows = c.fetchall()
         print(len(rows))
@@ -93,7 +134,10 @@ class SQLDbModified:
 
     @classmethod
     def getPositiveSentences(cls, title, month):
-        c.execute("SELECT positive FROM %s WHERE title = (?)" % month, (title,))
+
+        mySql_query = "SELECT positive FROM " + month + " WHERE title = %s "
+        c.execute(mySql_query, (title,))
+
         rows = c.fetchall()
 
         for row in rows:
@@ -103,7 +147,8 @@ class SQLDbModified:
 
     @classmethod
     def getNegativeSentences(cls, title, month):
-        c.execute("SELECT negative FROM %s WHERE title = (?)" % month, (title,))
+        mySql_query = "SELECT negative FROM " + month + " WHERE title = %s "
+        c.execute(mySql_query, (title,))
         rows = c.fetchall()
 
         for row in rows:
@@ -119,6 +164,7 @@ class SQLDbModified:
     # This method plots the bar graph of a combined year of all the positive and the negative senetences in percentage
     @classmethod
     def combinedBarGraph(cls):
+        print("Hello from combined bar graphs")
         negative = list()
         positive = list()
 
@@ -143,8 +189,8 @@ class SQLDbModified:
             elif x == 8:
                 month = 'september_description'
 
-
-            c.execute("SELECT SUM(positive), SUM(negative) FROM '%s' " %month)
+            sql = "SELECT SUM(positive), SUM(negative) FROM " + month
+            c.execute(sql)
             rows = c.fetchall()
             for row in rows:
                 # These steps are done for scaling purposes, in terms of percentage, how many are +ve and how many are -ve
@@ -180,15 +226,17 @@ class SQLDbModified:
     # This method plots a bar graph of the positive and the negative senetnces of all the articles of a month
     @classmethod
     def individualBarGraph(cls,month):
+            print("Hello from individual bar graph")
 
             # Get the sum of all the positive articles and negative articles
-            c.execute("SELECT SUM(positive), SUM(negative) FROM '%s' " %month)
+            sql = "SELECT SUM(positive), SUM(negative) FROM " + month
+            c.execute(sql)
             rows = c.fetchall()
             values = list()
 
             for row in rows:
-                values.append(row[0])
-                values.append(row[1])
+                values.append(int(row[0]))
+                values.append(int(row[1]))
 
             print(values)
             # Plotting the bar graph
@@ -197,7 +245,7 @@ class SQLDbModified:
             type_of_sentiment = ['Positive', 'Negative']
             data = values
             rects = plt.bar(type_of_sentiment, data, color = ['lightgreen','coral'])
-            plt.title("Bar graph for Sentiment Article %s " %month)
+            plt.title("Bar graph for Sentiment Articles %s " %month)
 
             for rect, label in zip(rects, data):
                 height = rect.get_height()
@@ -207,8 +255,10 @@ class SQLDbModified:
     # This method gives us the titles of all the articles for a particular month
     @classmethod
     def getArticlesForMonth(cls,month):
+        print("Hello from get articles for month")
         print("The month is ", month)
-        c.execute("SELECT title FROM '%s' " %month)
+        sql = "SELECT title FROM " + month
+        c.execute(sql)
         rows = c.fetchall()
         titles = list()
 
@@ -218,14 +268,23 @@ class SQLDbModified:
         return titles
 
     def articleBarGraph(cls, title, month):
-        c.execute("SELECT positive, negative FROM %s WHERE title = (?)" %month,(title,))
+        print("Hello from article bar graph")
+        try:
+            print(title)
+            print(month)
+            mySql_query = "SELECT positive, negative FROM " + month + " WHERE title = %s "
+            c.execute(mySql_query,(title,))
+
+        except Exception as e:
+            print(e)
 
         rows = c.fetchall()
         values = list()
+        print(len(rows))
 
         for row in rows:
-            values.append(row[0])
-            values.append(row[1])
+            values.append(int(row[0]))
+            values.append(int(row[1]))
 
             print(values)
             # Plotting the bar graph
@@ -241,7 +300,7 @@ class SQLDbModified:
                 plt.text(rect.get_x() + rect.get_width() / 2, height, label, ha='center', va='bottom')
             plt.show()
 
-ob = SQLDbModified
-# ob.create_month_description()
-#ob.get_month_description("january_description")
-#ob.get_month_sentiments("january_sentiments")
+ob = MySQLDbModified
+ob.get_month_description("january_description")
+#ob.create_month_description("january_description")
+#ob.create_month_sentiments("january_sentiments")

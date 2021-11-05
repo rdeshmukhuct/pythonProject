@@ -9,9 +9,12 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
+import MySQLDatabaseModified
 import SQLiteDBModified
 
-db = SQLiteDBModified.SQLDbModified()
+#db = SQLiteDBModified.SQLDbModified()
+db = MySQLDatabaseModified.MySQLDbModified()
 
 from articlePage import *
 

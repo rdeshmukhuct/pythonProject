@@ -58,62 +58,34 @@ class ArticleSentiment:
         self.neutral_counter = 0
         self.sum_total_polarity = 0
 
-        # Create all the tables required
-
-        self.list_of_months = ["january_sentiments", "february_sentiments", "march_sentiments", "april_sentiments",
-                               "may_sentiments", "june_sentiments", "july_sentiments", "august_sentiments",
-                               "september_sentiments", "october_sentiments"]
-        self.list_of_months_description = ["january_description", "february_description", "march_description", "april_description",
-                               "may_description", "june_description", "july_description", "august_description",
-                               "september_description", "october_description"]
-        # Create all the month tables
-        for month in self.list_of_months:
-            db.create_month_sentiments(month)
-        for month in self.list_of_months_description:
-            db.create_month_description(month)
+    #db.create_description()
 
     # This can also be change later. article_analysis.py has the same function
     # Read the documentation in article_analysis.py for more information
     def search_article_timeframe(self):
-        google_news = GoogleNews()
-        google_news.set_lang('en')
-        google_news.set_time_range('09/01/2021', '09/30/2021')
-        google_news.set_encode('utf-8')
+        try:
+            google_news = GoogleNews()
+            google_news.set_lang('en')
+            google_news.set_time_range('10/01/2021', '10/31/2021')
+            google_news.set_encode('utf-8')
 
-        # google_news.get_news('UCTT')      # Cannot use this for time range
-        google_news.search('UCTT')
-        self.links = google_news.get_links()
-        self.result = google_news.result(sort=True)
-        protocol = 'https://'  # appends the protocol if the url if the url is missing it.
-        # self.url = np.array([protocol + domain if protocol not in domain else domain for domain in self.links])
-        print("End of search")
+            # google_news.get_news('UCTT')      # Cannot use this for time range
+            google_news.search('UCTT')
+            self.links = google_news.get_links()
+            self.result = google_news.result(sort=True)
+            protocol = 'https://'  # appends the protocol if the url if the url is missing it.
+            # self.url = np.array([protocol + domain if protocol not in domain else domain for domain in self.links])
+            print("End of search")
 
-        for result in self.result:
-            print(result['title'])
+            for result in self.result:
+                print(result['title'])
 
-        # SQL call here
-        # parse_articles() takes one argument which is the text file from the list and returns the processed article
-        # This is the most costly and time consuming function in the class, because of parse() and nlp() which
-        # take the most amount of time to compute. time to compute is usually greater than 70
-
-    def set_month(self):
-
-        start_month = '09/01/2021'
-        end_month = '09/30/2021'
-        month_value = start_month.split('/')
-        value = int(month_value[0])
-
-        return self.list_of_months[value-1]
-
-    def set_month_description(self):
-
-        start_month = '09/01/2021'
-        end_month = '09/30/2021'
-        month_value = start_month.split('/')
-        value = int(month_value[0])
-
-        return self.list_of_months_description[value - 1]
-
+            # SQL call here
+            # parse_articles() takes one argument which is the text file from the list and returns the processed article
+            # This is the most costly and time consuming function in the class, because of parse() and nlp() which
+            # take the most amount of time to compute. time to compute is usually greater than 70
+        except Exception as e:
+            print(e)
 
 
     @classmethod
@@ -207,17 +179,11 @@ class ArticleSentiment:
 
                     # for i in self.list_of_months:
                     # month = self.list_of_months[counter]
-                    print(self.set_month())
-                    print(self.set_month_description())
-                    print("Here")
+
                     print(title_param, date_param, link_param, positive_sentences, negative_sentences, article_polarity)
-                    db.insert_month_description(self.set_month_description(), title_param, date_param, link_param,
+                    db.insert_description(title_param, date_param, link_param,
                                                 positive_sentences, negative_sentences,
                                                 article_polarity)
-                    # db.insert_month_description(self.set_month_description(), title_param, date_param, link_param, positive_sentences,negative_sentences,article_polarity)
-                    db.insert_month_sentiments(self.set_month(), title_param, date_param, pos, neg)
-                    # print(month)
-                    # counter += 1
 
 
 

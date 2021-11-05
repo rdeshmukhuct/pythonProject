@@ -6,6 +6,8 @@ from textblob import TextBlob
 import multiprocessing
 import numpy as np
 import time
+
+import MySQLDB
 import article_analysis
 import datetime as dt
 from tkinter import *
@@ -30,7 +32,8 @@ import SQLiteDB
 
 nltk.download('punkt')
 oc = article_analysis.GUIFunctions()
-db = SQLiteDB.SQLDb()
+#db = SQLiteDB.SQLDb()
+db = MySQLDB.MYSQLDb()
 
 
 # ReadMe -> This class analyzes the polarity and sentiment of each article scarped form the internet
