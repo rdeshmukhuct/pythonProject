@@ -4,20 +4,12 @@ import sys
 # values = article_analysis.GUIFunctions()
 # urls, result = values.search_articles()
 
-# Create the initial connection
-import MySQLDB
-import SQLiteDB
-
 import mysql.connector
 
 conn = mysql.connector.connect(user='Admin', password='UCT123@!',
                               host='10.0.0.185',
                               database='overview')
 c = conn.cursor()
-
-
-
-
 
 
 class MYSQLDb:
@@ -27,7 +19,7 @@ class MYSQLDb:
         print("table created")
         c.execute("DROP TABLE IF EXISTS articles")
         print("Table dropped")
-        sql = "CREATE TABLE articles (title VARCHAR(255),descr VARCHAR(255),date VARCHAR(255), datetime VARCHAR(255),link MEDIUMTEXT,media MEDIUMTEXT,img VARCHAR(255), site VARCHAR(255))"
+        sql = "CREATE TABLE articles (title VARCHAR(255),descr VARCHAR(255),date VARCHAR(255), datetime DATE,link MEDIUMTEXT,media MEDIUMTEXT,img VARCHAR(255), site VARCHAR(255))"
         print(sql)
         try:
             c.execute(sql)
@@ -44,7 +36,8 @@ class MYSQLDb:
         # so we just update the link with the url
         for item in result:
             item.update(link=url[counter])
-            item.update(datetime="Not Available")
+            #item.update(datetime="Not Available")
+
 
             counter += 1
 

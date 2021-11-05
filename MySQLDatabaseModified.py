@@ -81,6 +81,31 @@ class MySQLDbModified:
             print("failed +ve: ", e)
         conn.commit()
 
+        # Done
+
+    @classmethod
+    def create_description(cls):
+        try:
+            print("Here is create")
+            sql = "CREATE TABLE combined (title VARCHAR(300),datetime DATE,link MEDIUMTEXT," \
+                  "positive INT,negative INT,polarity FLOAT) "
+            c.execute(sql)
+        except Exception as e:
+            print(e);
+
+    @classmethod
+    def insert_description(self, title, date, link, positive, negative, polarity):
+        try:
+            print("Trying the insert")
+            values = (title, date, link, positive, negative, polarity)
+            mySql_insert_query = "INSERT INTO combined (title, datetime, link ,positive, negative, polarity) VALUES (%s, %s, %s, %s, %s, %s) "
+
+            c.execute(mySql_insert_query, values)
+            print(mySql_insert_query)
+        except Exception as e:
+            print("failed +ve: ", e)
+        conn.commit()
+
     @classmethod
     def get_month_description(cls, month_sentiment):
         print("Hello from get_month_description")
