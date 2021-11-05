@@ -70,6 +70,7 @@ class Ui_MainWindowSummary(object):
 
     def summary(self):
         title = self.comboBoxArticles.currentText()
+        
         conn = mysql.connector.connect(user='Admin', password='UCT123@!',
                                        host='10.0.0.185',
                                        database='overview')
