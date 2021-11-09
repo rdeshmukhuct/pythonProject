@@ -165,10 +165,11 @@ class MySQLDbModified:
     @classmethod
     def combinedBarGraph(cls):
         print("Hello from combined bar graphs")
-        negative = list()
-        positive = list()
+        #negative = list()
+        #positive = list()
+        polarity_list = list()
 
-        for x in range(9):
+        for x in range(10):
 
             if x == 0:
                 month = 'january_description'
@@ -188,39 +189,54 @@ class MySQLDbModified:
                 month = 'august_description'
             elif x == 8:
                 month = 'september_description'
+            elif x == 9:
+                month = 'october_description'
 
-            sql = "SELECT SUM(positive), SUM(negative) FROM " + month
+            #sql = "SELECT SUM(positive), SUM(negative) FROM " + month
+            sql = "SELECT AVG(polarity) FROM " + month
+
             c.execute(sql)
             rows = c.fetchall()
             for row in rows:
                 # These steps are done for scaling purposes, in terms of percentage, how many are +ve and how many are -ve
-                total = row[0] + row[1]
-                pos_scale = int((row[0]/total) * 100)
-                neg_scale = int((row[1]/total) * 100)
-                positive.append(pos_scale)
-                negative.append(neg_scale)
+                #total = row[0] + row[1]
+                #pos_scale = int((row[0]/total) * 100)
+                #neg_scale = int((row[1]/total) * 100)
+                #positive.append(pos_scale)
+                #negative.append(neg_scale)
+                polarity_list.append(row)
 
-        print(positive)
-        print(negative)
+        #print(positive)
+        #print(negative)
 
-        X = ['January','February','March','April','May','June','July', 'August','September']
+        X = ['January','February','March','April','May','June','July', 'August','September','October']
+        print(polarity_list)
 
 
-        X_axis = np.arange(len(X))
+        #X_axis = np.arange(len(X))
 
-        plt.bar(X_axis - 0.2, positive, 0.4, label = 'positive')
-        plt.bar(X_axis + 0.2, negative, 0.4, label = 'negative')
+       # plt.bar(X_axis - 0.2, positive, 0.4, label = 'positive')
+        #plt.bar(X_axis + 0.2, negative, 0.4, label = 'negative')
 
-        plt.xticks(X_axis, X)
+        #plt.xticks(X_axis, X)
+        #plt.xticks(rotation=20)
+       # plt.xlabel("Months")
+        #plt.ylabel("Sentiments (in %)")
+        #plt.title("Sentiment Analysis of Year 2021")
+        #for i in range(len(X)):
+               # plt.text(i, positive[i], positive[i], ha = 'right', color = 'black')
+               # plt.text(i, negative[i], negative[i], ha = 'left', color = 'black')
+
+        #plt.legend()
+        #plt.show()
+
+
+        plt.plot(X, polarity_list, color='green', marker='o')
+       # plt.plot(X, negative, color='red', marker='o')
+        plt.title('Average polarity score over the year')
+        plt.xlabel('Month')
         plt.xticks(rotation=20)
-        plt.xlabel("Months")
-        plt.ylabel("Sentiments (in %)")
-        plt.title("Sentiment Analysis of Year 2021")
-        for i in range(len(X)):
-                plt.text(i, positive[i], positive[i], ha = 'right', color = 'black')
-                plt.text(i, negative[i], negative[i], ha = 'left', color = 'black')
-
-        plt.legend()
+        plt.ylabel('Average Polarity Score ')
         plt.show()
 
     # This method plots a bar graph of the positive and the negative senetnces of all the articles of a month
