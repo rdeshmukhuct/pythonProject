@@ -1,21 +1,17 @@
 import csv
 
-from dateutil.parser import parse
-import matplotlib as mpl
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 import pandas as pd
+
 pd.options.mode.chained_assignment = None
 
 from matplotlib.pylab import rcParams
 
 rcParams['figure.figsize'] = 20, 10
 
-import keras
-import tensorflow.keras as keras
 from keras.models import Sequential
-from keras.layers import LSTM, Dropout, Dense
+from keras.layers import LSTM, Dense
 
 from sklearn.preprocessing import MinMaxScaler
 
@@ -139,8 +135,8 @@ plt.show()
 #
 # print(df.head())
 
-# t = TimeSeries()
-# t.open_csv('report.csv')
-# t.plot_by_month()
-# t.plot_df()
-# t.main()
+t = TimeSeries()
+t.open_csv('report.csv')
+t.plot_by_month()
+t.plot_df()
+t.main()
