@@ -133,15 +133,15 @@ label_ticker.pack()
 text_ticker = Entry(root)
 text_ticker.pack()
 
-ulabel = Label(root, text='URL', font='Roboto')
-ulabel.pack()
+# ulabel = Label(root, text='URL', font='Roboto')
+# ulabel.pack()
+#
+# utext = Text(root, height=1, width=100)
+# utext.pack()
 
-utext = Text(root, height=1, width=100)
-utext.pack()
-
-summary = Text(root, height=20, width=100)
-summary.config(state='disabled', bg='#dddddd')
-summary.pack()
+# summary = Text(root, height=20, width=100)
+# summary.config(state='disabled', bg='#dddddd')
+# summary.pack()
 
 # lenLabel = Label(root, text='Len', font='Roboto')
 # lenLabel.pack()
@@ -154,8 +154,8 @@ summary.pack()
 btn_visualize = Button(root, text="Market Stock", font='Roboto', command=visualize)
 btn_visualize.pack()
 
-btn_summary = Button(root, text="Summarize", font='Roboto', command=summarize)
-btn_summary.pack()
+# btn_summary = Button(root, text="Summarize", font='Roboto', command=summarize)
+# btn_summary.pack()
 
 # btn_len = Button(root, text='Articles', font='Roboto', command=get_articles)
 # btn_len.pack()

@@ -22,12 +22,18 @@ def on_pick(event):
     print
 
 
+def plot_by_month():
+    # quarter = [1,2,3,4]
+    # eps = [.81, .92, .99, 1.07]
+    gui.visualize()
+
+
 class TimeSeries:
 
     def __init__(self):
         self.polarityScore = []
         self.dates = []
-        self.df = pd.read_csv('report.csv')
+        self.df = pd.read_csv('files/report.csv')
 
     def open_csv(self, csv_file):
         with open(csv_file, 'r', encoding='utf-8') as read_csv:
@@ -36,11 +42,6 @@ class TimeSeries:
             for line in csv_reader:
                 self.dates.append(line['datetime'])
                 self.polarityScore.append(line['polarity'])
-
-    def plot_by_month(self):
-        # quarter = [1,2,3,4]
-        # eps = [.81, .92, .99, 1.07]
-        gui.visualize()
 
     def plot_df(self):
         fig, ax = plt.subplots()
@@ -58,6 +59,7 @@ class TimeSeries:
     def main(self):
         print(self.dates)
         print(self.polarityScore)
+
 
 
 #

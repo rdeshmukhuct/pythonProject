@@ -9,8 +9,8 @@ import numpy as np
 import word_frequency
 
 ob = word_frequency.MostCommonWords()
-conn = sqlite3.connect('databases/test.db')
-c = conn.cursor()
+#conn = sqlite3.connect('databases/test.db')
+#c = conn.cursor()
 
 
 # The main purpose of GUIFnctions() is to assist GUI.py when calling functions and to reduce class size
@@ -47,9 +47,9 @@ class GUIFunctions:
     # argument 1, 3, 4, but don't modify the second argument
     # data = web.DataReader('Company_Ticker', 'yahoo', 'Change_Start_Date', 'Change_End_Date')
     @classmethod
-    def visualize(cls):
+    def visualize(cls, ticker):
         # HAML ticker not found, so using UCTT for debugging purposes
-        data = web.DataReader('UCTT', 'yahoo', '08/25/2018', '11/2/2021')
+        data = web.DataReader(ticker, 'yahoo', '08/25/2018', '11/2/2021')
         data = data[['Open', 'High', 'Low', 'Close']]
 
         data.reset_index(inplace=True)
@@ -58,7 +58,7 @@ class GUIFunctions:
         ax = plt.subplot()
         ax.grid(True)
         ax.set_axisbelow(True)
-        ax.set_title('{} Share Price'.format('UCTT'), color='white')
+        ax.set_title('{} Share Price'.format(ticker), color='white')
         ax.figure.canvas.manager.set_window_title("Alpha Version v0.1 Alpha")
         ax.set_facecolor('black')
         ax.figure.set_facecolor('#121212')
