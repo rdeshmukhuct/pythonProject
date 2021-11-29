@@ -9,6 +9,8 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QLineEdit
+
 import word_frequency
 import article_analysis
 from BarGraph import *
@@ -32,8 +34,8 @@ class Ui_MainWindowMenu(object):
         font.setFamily("Constantia")
         font.setPointSize(14)
         self.pushButtonStock.setFont(font)
-        self.pushButtonStock.setStyleSheet("border-color: rgb(85, 0, 255);\n"
-                                           "")
+        self.pushButtonStock.setStyleSheet("border-color: rgb(85, 0, 255);\n""")
+
         self.pushButtonStock.setObjectName("pushButtonStock")
         self.logo = QtWidgets.QLabel(self.centralwidget)
         self.logo.setGeometry(QtCore.QRect(10, 0, 621, 201))
@@ -53,8 +55,8 @@ class Ui_MainWindowMenu(object):
         font.setFamily("Constantia")
         font.setPointSize(14)
         self.pushButtonVisualisation.setFont(font)
-        self.pushButtonVisualisation.setStyleSheet("border-color: rgb(85, 0, 255);\n"
-                                                   "")
+        self.pushButtonVisualisation.setStyleSheet("border-color: rgb(85, 0, 255);\n""")
+
         self.pushButtonVisualisation.setObjectName("pushButtonVisualisation")
         self.pushButtonBargraph = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonBargraph.setGeometry(QtCore.QRect(180, 370, 241, 51))
@@ -109,6 +111,8 @@ class Ui_MainWindowMenu(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pushButtonStock.setText(_translate("MainWindow", "Market Stock"))
+        # self.enterButtonVisualisation.setText(_translate("MainWindow", "TICKER"))
+        #        self.enterTicker.QInputDialog.getText(self, "Get Text", "Ticker: ", QLineEdit.Normal, "")
         self.pushButtonVisualisation.setText(_translate("MainWindow", "Data Visualisation"))
         self.pushButtonBargraph.setText(_translate("MainWindow", "Bar Graph"))
         self.pushButtonSummary.setText(_translate("MainWindow", "Summary"))
@@ -120,7 +124,7 @@ class Ui_MainWindowMenu(object):
         self.pushButtonSummary.clicked.connect(self.summary)
 
     def MarketStock(self):
-        obj.visualize()
+        obj.visualize('AMAT')
 
     def dataVisualization(self):
         values = obj.read_lines()

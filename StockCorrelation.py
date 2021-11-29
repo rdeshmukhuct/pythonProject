@@ -13,21 +13,21 @@ amat_polarity = []
 lam_date = []
 lam_polarity = []
 
-with open('UCTLatest.csv', 'r', encoding='utf-8') as read_csv:
+with open('files/UCTLatest.csv', 'r', encoding='utf-8') as read_csv:
     csv_reader = csv.DictReader(read_csv)
 
     for line in csv_reader:
         uct_date.append(line['datetime'])
         uct_polarity.append(line['polarity'])
 
-with open('AMAT.csv', 'r', encoding='utf-8') as read_csv:
+with open('files/AMAT.csv', 'r', encoding='utf-8') as read_csv:
     csv_reader = csv.DictReader(read_csv)
 
     for line in csv_reader:
         amat_date.append(line['datetime'])
         amat_polarity.append(line['polarity'])
 
-with open('LAM.csv', 'r', encoding='utf-8') as read_csv:
+with open('files/LAM.csv', 'r', encoding='utf-8') as read_csv:
     csv_reader = csv.DictReader(read_csv)
 
     for line in csv_reader:
