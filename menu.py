@@ -13,11 +13,16 @@ from PyQt5.QtWidgets import QLineEdit
 
 import word_frequency
 import article_analysis
+
 from BarGraph import *
 from summaryArticles import *
+import CSVCreate
+objStock = CSVCreate.stockPrices()
+
 
 ob = word_frequency.MostCommonWords()  # MUST RENAME THESE OBJECTS TO BETTER REPRESENT THEIR FUNCTIONALITY
 obj = article_analysis.GUIFunctions()
+
 
 
 class Ui_MainWindowMenu(object):
@@ -124,7 +129,7 @@ class Ui_MainWindowMenu(object):
         self.pushButtonSummary.clicked.connect(self.summary)
 
     def MarketStock(self):
-        obj.visualize('AMAT')
+        objStock.visualize()
 
     def dataVisualization(self):
         values = obj.read_lines()
