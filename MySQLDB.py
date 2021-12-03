@@ -1,13 +1,9 @@
-import sqlite3 as lite
-import sys
 
-# values = article_analysis.GUIFunctions()
-# urls, result = values.search_articles()
 
 import mysql.connector
 
 conn = mysql.connector.connect(user='Admin', password='UCT123@!',
-                              host='10.0.0.185',
+                              host='10.0.0.186',
                               database='overview')
 c = conn.cursor()
 
@@ -154,8 +150,3 @@ class MYSQLDb:
     def close(cls):
         conn.commit()
         conn.close()
-#ob = MySQLDB.MYSQLDb
-#ob.create_table_articles()
-#ob.get_data()
-# ob = SQLiteDB.SQLDb
-# print(ob.get_data())

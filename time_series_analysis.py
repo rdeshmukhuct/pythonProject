@@ -47,6 +47,7 @@ class TimeSeries:
         fig, ax = plt.subplots()
         tolerance = 10
         ax.plot(self.df.datetime, self.df.polarity, 'ro-', picker=tolerance)
+        plt.xticks(rotation = 45)
 
         # plt.figure(figsize=(25, 12.5), dpi=50)  # This will be modified to automatically adjust to screensize
         # plt.plot(self.df.datetime, self.df.polarity, color='tab:red', picker=tolerance)
@@ -147,8 +148,8 @@ class TimeSeries:
 #
 # print(df.head())
 
-t = TimeSeries()
-t.open_csv('report.csv')
+#t = TimeSeries()
+#t.open_csv('report.csv')
 # t.plot_by_month()
-t.plot_df()
-t.main()
+#t.plot_df()
+#t.main()

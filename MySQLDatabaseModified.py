@@ -8,7 +8,7 @@ import sqlite3 as lite
 import mysql.connector
 
 conn = mysql.connector.connect(user='Admin', password='UCT123@!',
-                              host='10.0.0.185',
+                              host='10.0.0.186',
                               database='uctt')
 c = conn.cursor()
 
@@ -87,6 +87,8 @@ class MySQLDbModified:
     def create_description(cls):
         try:
             print("Here is create")
+            #sql = "CREATE TABLE combined (title VARCHAR(300),datetime DATE,link MEDIUMTEXT," \
+             #     "positive INT,negative INT,polarity FLOAT) "
             sql = "CREATE TABLE combined (title VARCHAR(300),datetime DATE,link MEDIUMTEXT," \
                   "positive INT,negative INT,polarity FLOAT) "
             c.execute(sql)

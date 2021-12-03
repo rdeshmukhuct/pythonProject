@@ -11,12 +11,19 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from menu import *
 from modifiedHomePage import *
+import ExcelVisualisation
+import time_series_analysis
+
+t= time_series_analysis.TimeSeries()
+
+
+ob = ExcelVisualisation.Comparison()
 
 
 class Ui_MainWindowApp(object):
     def setupUiApp(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(478, 504)
+        MainWindow.resize(478, 704)
         MainWindow.setAutoFillBackground(True)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -34,6 +41,17 @@ class Ui_MainWindowApp(object):
         self.DetailedAnlaysis.setGeometry(QtCore.QRect(100, 350, 231, 71))
         self.DetailedAnlaysis.setStyleSheet("font: 12pt \"Verdana\";")
         self.DetailedAnlaysis.setObjectName("DetailedAnlaysis")
+
+        self.Comparison = QtWidgets.QPushButton(self.centralwidget)
+        self.Comparison.setGeometry(QtCore.QRect(120, 450, 191, 71))
+        self.Comparison.setStyleSheet("font: 12pt \"Verdana\";")
+        self.Comparison.setObjectName("Comparison")
+
+        self.timeSeries = QtWidgets.QPushButton(self.centralwidget)
+        self.timeSeries .setGeometry(QtCore.QRect(100, 550, 231, 71))
+        self.timeSeries .setStyleSheet("font: 12pt \"Verdana\";")
+        self.timeSeries .setObjectName("timeSeries ")
+
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(60, 160, 421, 61))
         self.label_2.setObjectName("label_2")
@@ -53,10 +71,14 @@ class Ui_MainWindowApp(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.Overview.setText(_translate("MainWindow", "Overview"))
+        self.Comparison.setText(_translate("MainWindow", "Comparison"))
+        self.timeSeries.setText(_translate("MainWindow", "Time Series"))
         self.DetailedAnlaysis.setText(_translate("MainWindow", "Detailed Analysis"))
         self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:16pt; font-weight:600; color:#00007f;\">Sentiment Analysis </span></p></body></html>"))
         self.DetailedAnlaysis.clicked.connect(self.analysis)
         self.Overview.clicked.connect(self.overview)
+        self.Comparison.clicked.connect(self.comparison)
+        self.timeSeries.clicked.connect(self.timeSeriesFunction)
 
     def overview(self):
         self.window = QtWidgets.QMainWindow()
@@ -69,6 +91,14 @@ class Ui_MainWindowApp(object):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.window)
         self.window.show()
+    def comparison(self):
+        ob.comparison()
+    def timeSeriesFunction(self):
+        t.open_csv('report.csv')
+        #t.plot_by_month()
+        t.plot_df()
+        t.main()
+
 
 if __name__ == "__main__":
     import sys
