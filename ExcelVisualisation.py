@@ -24,6 +24,9 @@ class Comparison:
         plt.plot(X, Y, label='Ultra Clean technology')
         plt.plot(X2, Y2, label='Lam Research Corporation')
         plt.plot(X3, Y3, label='Applied Materials, Inc')
+        plt.title(label="Polarity Score of UCT, LAM and AMAT (2018 - 2021)",
+                  fontsize=24,
+                  color="black")
         plt.legend()
 
         plt.xticks(rotation=35)

@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import sqlite3 as lite
 import mysql.connector
 
+# CHnage credentials here and MySQLDB
 conn = mysql.connector.connect(user='Admin', password='UCT123@!',
                               host='10.0.0.186',
                               database='uctt')

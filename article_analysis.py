@@ -7,6 +7,9 @@ import matplotlib.dates as mdates
 import pandas_datareader as web
 import numpy as np
 import word_frequency
+import MySQLDB
+
+db = MySQLDB.MYSQLDb()
 
 ob = word_frequency.MostCommonWords()
 #conn = sqlite3.connect('databases/test.db')
@@ -75,6 +78,7 @@ class GUIFunctions:
     # It displays a pie chart
     @classmethod
     def pie_chart(cls, datalist):
+        print(datalist)
         fig, (ax, ax1) = plt.subplots(1, 2, figsize=(10, 10))
 
         colors = ['#32CD32', '#ff0000', '#ffa500']
@@ -115,12 +119,18 @@ class GUIFunctions:
     # refer to documentation above GUIFunction.pie_chart()
     @classmethod
     def read_lines(cls):
-        len_of_articles_list = []
-        file1 = open('TextFiles/data.txt', 'r')
-        lines = file1.readlines()
-        count = 0
-        for line in lines:
-            count += 1
-            len_of_articles_list.append(line.strip())
-        values = [int(i) for i in len_of_articles_list]
+        print("Read Lines")
+        values = []
+        values.append(db.getPositiveCount())
+        values.append(db.getNegativeCount())
+        values.append(db.getNeutralCount())
         return values
+
+       # len_of_articles_list = []
+       # file1 = open('TextFiles/data.txt', 'r')
+        #lines = file1.readlines()
+        #count = 0
+        ##   count += 1
+          #  len_of_articles_list.append(line.strip())
+        #values = [int(i) for i in len_of_articles_list]
+

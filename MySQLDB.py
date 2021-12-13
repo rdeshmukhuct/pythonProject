@@ -1,7 +1,7 @@
 
 
 import mysql.connector
-
+# CHnage credentials here and MySQLDatabaseModified
 conn = mysql.connector.connect(user='Admin', password='UCT123@!',
                               host='10.0.0.186',
                               database='overview')
@@ -145,6 +145,37 @@ class MYSQLDb:
             listTitle.append(row[0])  # GET ONLY THE TITLE OF THE ARTICLE FROM THE TABLE
         print(len(rows))  # this will give number of occurrences
         return listTitle
+
+    @classmethod
+    def getPositiveCount(cls):
+        print("pos")
+        try:
+            c.execute("Select COUNT(*) FROM positive_texts")
+            rows = c.fetchall()
+            posCount = rows[0][0]
+            print(posCount)
+            return posCount
+        except Exception as e:
+            print(e)
+
+
+
+
+    @classmethod
+    def getNeutralCount(cls):
+        c.execute("Select COUNT(*) FROM neutral_texts")
+        rows = c.fetchall()
+        neutralCount = rows[0][0]
+        print(neutralCount)
+        return neutralCount
+
+    @classmethod
+    def getNegativeCount(cls):
+        c.execute("Select COUNT(*) FROM negative_texts")
+        rows = c.fetchall()
+        negCount = rows[0][0]
+        print(negCount)
+        return negCount
 
     @classmethod
     def close(cls):

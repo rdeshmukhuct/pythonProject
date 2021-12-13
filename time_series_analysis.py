@@ -48,6 +48,9 @@ class TimeSeries:
         tolerance = 10
         ax.plot(self.df.datetime, self.df.polarity, 'ro-', picker=tolerance)
         plt.xticks(rotation = 45)
+        plt.title(label="Polarity Score of UCT over the years (2018 - 2021)",
+                  fontsize=24,
+                  color="blue")
 
         # plt.figure(figsize=(25, 12.5), dpi=50)  # This will be modified to automatically adjust to screensize
         # plt.plot(self.df.datetime, self.df.polarity, color='tab:red', picker=tolerance)

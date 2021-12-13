@@ -58,7 +58,7 @@ class ArticleSentiment:
         self.neutral_counter = 0
         self.sum_total_polarity = 0
 
-    #db.create_description()
+   # db.create_description()
 
     # This can also be change later. article_analysis.py has the same function
     # Read the documentation in article_analysis.py for more information
@@ -66,11 +66,12 @@ class ArticleSentiment:
         try:
             google_news = GoogleNews()
             google_news.set_lang('en')
-            google_news.set_time_range('10/01/2021', '10/31/2021')
+            google_news.set_time_range('11/01/2021', '11/15/2021')
             google_news.set_encode('utf-8')
 
             # google_news.get_news('UCTT')      # Cannot use this for time range
             google_news.search('UCTT')
+            #google_news.search('LRCX')
             self.links = google_news.get_links()
             self.result = google_news.result(sort=True)
             protocol = 'https://'  # appends the protocol if the url if the url is missing it.
@@ -137,6 +138,17 @@ class ArticleSentiment:
             count2 = text.count(checkString1)
             count3 = text.count(checkString2)
             total_count = count3 + count2 + count1
+
+            #checkString = 'LRCX'
+            #checkString1 = 'Lam'
+            #checkString2 = 'Lam Research Corporation'
+            #count1 = text.count(checkString)
+            #count2 = text.count(checkString1)
+            #count3 = text.count(checkString2)
+            #total_count = count3 + count2 + count1
+            #print(total_count)
+
+
             # if the word UCTT or Ham - Let or Ultra Clean Holdings appear more
             # than 3 times then only we go ahead and insert into our table.
             if total_count > 3 or total_count == 3:
@@ -221,9 +233,9 @@ class ArticleSentiment:
         data = [len(self.positive_list), len(self.negative_list), len(self.neutral_list)]
 
         # sqlite ???? insert_occurances ???
-        with open('TextFiles/data.txt', 'w') as f:
-            for item in data:
-                f.write("%d\n" % item)
+        #with open('TextFiles/data.txt', 'w') as f:
+            #for item in data:
+                #f.write("%d\n" % item)
 
     # if trying to run this with multiprocessing you must use the following command for it to run
     # if __name__ == '__main__':
